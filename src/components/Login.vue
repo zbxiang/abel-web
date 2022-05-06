@@ -1,5 +1,6 @@
 <template>
     <div>Login</div>
+    <el-button type="primary" size="mini">回首页</el-button>
 </template>
 
 <script>
