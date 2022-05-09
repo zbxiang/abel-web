@@ -1,5 +1,5 @@
 <template>
-    <div>Welcome</div>
+    <div class="welcome">Welcome</div>
 </template>
 
 <script>
@@ -8,8 +8,7 @@ export default {
 }
 </script>
 
-<style scoped>
-a {
-    color: #42b983;
+<style scoped lang="scss">
+.welcome{
 }
 </style>
