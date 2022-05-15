@@ -3,6 +3,14 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeModules from './modules/home'
 
 const routes = [
+    {
+        name: 'login',
+        path: '/login',
+        meta: {
+            title: '登录'
+        },
+        component: () => import('@admin/components/Login.vue')
+    },
     ...HomeModules
 ]
 
