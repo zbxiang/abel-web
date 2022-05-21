@@ -2,7 +2,7 @@
  * Storage二次封装
  * @author JackBean
  */
- import config from './../config'
+ import config from '../config'
  export default {
     setItem(key, val) {
         let storage = this.getStroage();

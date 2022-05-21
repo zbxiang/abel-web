@@ -1,13 +1,14 @@
 <template>
   <div class="login-wrapper">
     <div class="modal">
-      <el-form ref="userForm" :model="formData" status-icon :rules="rules" ref="ruleFormRef" :size="formSize">
+      <el-form :model="formData" status-icon :rules="rules" ref="ruleFormRef" :size="formSize">
         <div class="title">后台管理系统</div>
         <el-form-item prop="userName">
           <el-input
             type="text"
             prefix-icon="el-icon-user"
             v-model="formData.userName"
+            placeholder="请输入用户名"
           />
         </el-form-item>
         <el-form-item prop="userPwd">
@@ -15,10 +16,11 @@
             type="password"
             prefix-icon="el-icon-view"
             v-model="formData.userPwd"
+            placeholder="请输入密码"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="btn-login" @click="login"
+          <el-button type="primary" class="btn-login" @click="submitForm(ruleFormRef)"
             >登录</el-button
           >
         </el-form-item>
@@ -30,6 +32,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
+import $services from '@C/services'
 
 export default defineComponent({
     setup() {
@@ -39,20 +42,44 @@ export default defineComponent({
             userName: '',
             userPwd: '',
         })
-
         const rules = reactive<FormRules>({
             userName: [{ required: true, message: '请输入用户名', trigger: 'blur'}],
             userPwd: [{ required: true, message: '请输入密码', trigger: 'blur'}]
         })
 
+        const submitForm = async (formEl: FormInstance | undefined) => {
+          if (!formEl) return
+          await formEl.validate((valid, fields) => {
+            if (valid) {
+              login()
+            } else {
+              console.log('error submit!', fields)
+            }
+          })
+        }
+
+        const resetForm = (formEl: FormInstance | undefined) => {
+          if (!formEl) return
+          formEl.resetFields()
+        }
+
         const login = () => {
-            console.log('dsfksdjgksjdkgjsdjgs')
+            $services.userModule.login(formData).then((res) => {
+              this.$store.commit('saveUserInfo', res)
+              this.$router.push('/welcome')
+              console.log('dsfksdjgksjdkgjsdjgs')
+              console.log(res)
+            })
         }
 
         return {
+            formSize,
+            ruleFormRef,
             formData,
             rules,
-            login
+            login,
+            submitForm,
+            resetForm
         }
     },
 })

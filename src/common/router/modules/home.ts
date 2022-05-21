@@ -1,4 +1,4 @@
-import frameBox from '@/common/pages/frameBox.vue'
+import frame from '@/common/frame/frame.vue'
 import Welcome from '@/web/pages/home/welcome.vue'
 
 export default [{
@@ -7,7 +7,7 @@ export default [{
     meta: {
         title: '首页'
     },
-    component: frameBox,
+    component: frame,
     redirect: '/welcome',
     children: [
         {

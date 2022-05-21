@@ -2,9 +2,9 @@
  * axios二次封装
  */
  import axios from 'axios'
- import config from './../config'
+ import config from '../config'
  import { ElMessage } from 'element-plus'
- import router from './../router'
+ import router from '../router'
  import storage from './storage'
  
  const TOKEN_INVALID = 'Token认证失败，请重新登录'
@@ -49,14 +49,13 @@
      if (options.method.toLowerCase() === 'get') {
          options.params = options.data;
      }
-     let isMock = config.mock;
      if (typeof options.mock != 'undefined') {
-         isMock = options.mock;
+        config.mock = options.mock;
      }
      if (config.env === 'prod') {
          service.defaults.baseURL = config.baseApi
      } else {
-         service.defaults.baseURL = isMock ? config.mockApi : config.baseApi
+         service.defaults.baseURL = config.mock ? config.mockApi : config.baseApi
      }
  
      return service(options)
