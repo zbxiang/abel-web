@@ -84,7 +84,6 @@ export default defineComponent({
     },
 })
 </script>
->
 
 <style lang="scss">
 .login-wrapper {
