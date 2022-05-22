@@ -5,9 +5,9 @@ import http from '@C/utils/http'
  */
 export default {
     login(params: Object) {
-        http({
+        return http({
             url: '/users/login',
-            methods: 'post',
+            method: 'post',
             data: params,
             mock: false
         })

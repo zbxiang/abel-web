@@ -44,11 +44,11 @@ export default defineConfig(({ mode }) => {
       strictPort: false,
       proxy: {
         '/api': {
-          target: 'http://...............',
+          target: 'http://localhost:3000',
           changeOrigin: true,
-          rewrite: (path) => {
-            return path.replace(/^api/, '')
-          }
+          // rewrite: (path) => {
+          //   return path.replace(/^api/, '')
+          // }
         }
       },
       cors: true, // 跨域

@@ -10,7 +10,7 @@ interface modeType {
 
 const EnvConfig: any = {
     development: <modeType>{
-        baseApi: '/dev',
+        baseApi: '/api',
         mockApi: ''
     },
     test: <modeType>{
@@ -25,6 +25,7 @@ const EnvConfig: any = {
 
 export default {
     env,
-    mock: true,
+    mock: false,
+    namespace: 'manager',
     ...EnvConfig[env]
 }

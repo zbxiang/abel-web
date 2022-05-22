@@ -33,9 +33,13 @@
 import { defineComponent, reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import $services from '@C/services'
+import {useRouter} from 'vue-router'
+import {useStore} from 'vuex'
 
 export default defineComponent({
     setup() {
+        const router = useRouter()
+        const store = useStore()
         const formSize = ref('default')
         const ruleFormRef = ref<FormInstance>()
         const formData = reactive({
@@ -46,7 +50,6 @@ export default defineComponent({
             userName: [{ required: true, message: '请输入用户名', trigger: 'blur'}],
             userPwd: [{ required: true, message: '请输入密码', trigger: 'blur'}]
         })
-
         const submitForm = async (formEl: FormInstance | undefined) => {
           if (!formEl) return
           await formEl.validate((valid, fields) => {
@@ -57,21 +60,18 @@ export default defineComponent({
             }
           })
         }
-
         const resetForm = (formEl: FormInstance | undefined) => {
           if (!formEl) return
           formEl.resetFields()
         }
-
         const login = () => {
-            $services.userModule.login(formData).then((res) => {
-              this.$store.commit('saveUserInfo', res)
-              this.$router.push('/welcome')
-              console.log('dsfksdjgksjdkgjsdjgs')
-              console.log(res)
+          $services.userModule.login(formData).then(async (res: any) => {
+            store.commit("saveUserInfo", res)
+            router.push({
+            	path:'/welcome',
             })
+          })
         }
-
         return {
             formSize,
             ruleFormRef,
