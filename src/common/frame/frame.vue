@@ -1,13 +1,13 @@
 <template>
     <div class="basic-layout">
-        <div class="nav-side">
+        <div :class="['nav-side', isCollapse?'fold':'unfold']">
             <div class="logo">
                 <img src="./../assets/logo.png" alt="">
                 <span>Manager</span>
             </div>
-            <side-menu></side-menu>
+            <asider-menu></asider-menu>
         </div>
-        <div class="content-right">
+        <div :class="['content-right', isCollapse?'fold':'unfold']">
             <nav-top></nav-top>
             <div class="wrapper">
                 <div class="main-page">
@@ -19,15 +19,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent} from 'vue'
+import { defineComponent, defineAsyncComponent, getCurrentInstance, ref, Ref} from 'vue'
 
 export default defineComponent({
-    name: 'frane',
+    name: 'frame',
     components: {
-        sideMenu: defineAsyncComponent(() => import('@C/components/sideMenu.vue')),
+        asiderMenu: defineAsyncComponent(() => import('@C/components/asiderMenu.vue')),
         navTop: defineAsyncComponent(() => import('@C/components/navTop.vue'))
     },
+    mounted() {
+        this.getMenuList()
+    },
     setup() {
+        const mitter = getCurrentInstance()?.appContext.config.globalProperties.emitter
+        let isCollapse: Ref<Boolean> = ref(false)
+        const userMenu = ref([])
+
+        mitter.on('expendCollapse', () => {
+            isCollapse.value = !isCollapse.value
+        })
+
+        const getMenuList = async () => {
+            try {
+                const list = await $services.userModule.getMenuList()
+                userMenu.value = list
+            } catch(error) {
+                console.error(error)
+            }
+        }
+        
+        return {
+            isCollapse,
+            getMenuList
+        }
     },
 })
 </script>
@@ -42,7 +66,7 @@ export default defineComponent({
         background-color: #001529;
         color: #fff;
         overflow-y: auto;
-        transition: width .5s;
+        // transition: width .5s;
         .logo{
             display: flex;
             align-items: center;
@@ -53,6 +77,12 @@ export default defineComponent({
                 height: 32px;
                 margin: 0 10px;
             }
+        }
+        &.fold{
+            width: 64px;
+        }
+        &.unfold{
+            width: 200px;
         }
     }
     .content-right{
@@ -66,6 +96,12 @@ export default defineComponent({
         .main-page{
             height: 100%;
             background: #fff;
+        }
+        &.fold{
+            margin-left: 64px;
+        }
+        &.unfold{
+            margin-left: 200px;
         }
     }
 }

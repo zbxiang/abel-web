@@ -11,5 +11,21 @@ export default {
             data: params,
             mock: false
         })
+    },
+    noticeCount(params: Object) {
+        return http({
+            url: '/leave/count',
+            method: 'get',
+            data: {},
+            mock: false
+        })
+    },
+    getMenuList(params: Object) {
+        return http({
+            url: '/menu/List',
+            method: 'get',
+            data: {},
+            mock: false
+        })
     }
 }

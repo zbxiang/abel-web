@@ -4,7 +4,7 @@
         background-color="#001529"
         text-color="#fff"
         router
-        :collapse="false"
+        :collapse="isCollapse"
         class="nav-menu">
         <el-sub-menu index="1">
             <template #title>
@@ -25,10 +25,24 @@
     </el-menu>
 </template>
 
-<script lang="ts" setup>
-    import {
-        Setting,
-    } from '@element-plus/icons-vue'
+<script lang="ts">
+    import { defineComponent, getCurrentInstance, ref, Ref } from 'vue'
+    export default defineComponent({
+        name: 'asiderMenu',
+        setup() {
+            const mitter = getCurrentInstance()?.appContext.config.globalProperties.emitter
+            let isCollapse: Ref<Boolean> = ref(false)
+            const userMenu = ref([])
+            
+            mitter.on('expendCollapse', () => {
+                isCollapse.value = !isCollapse.value
+            })
+            
+            return {
+                isCollapse,
+            }
+        }
+    })
 </script>
 
 <style scoped lang="scss">
