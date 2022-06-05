@@ -42,7 +42,7 @@ async function init() {
     app.config.globalProperties.$http = http
     app.config.globalProperties.$services = services
     app.config.globalProperties.$storage = storage
-    app.config.globalProperties.emitter = emitter
+    app.config.globalProperties.$emitter = emitter
     app.use(router).use(store).use(ElementPlus).mount('#app')
 }
 

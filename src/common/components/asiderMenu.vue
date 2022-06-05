@@ -30,11 +30,11 @@
     export default defineComponent({
         name: 'asiderMenu',
         setup() {
-            const mitter = getCurrentInstance()?.appContext.config.globalProperties.emitter
+            const $emitter = getCurrentInstance()?.appContext.config.globalProperties.$emitter
             let isCollapse: Ref<Boolean> = ref(false)
             const userMenu = ref([])
             
-            mitter.on('expendCollapse', () => {
+            $emitter.on('expendCollapse', () => {
                 isCollapse.value = !isCollapse.value
             })
             

@@ -40,7 +40,7 @@
             this.getNoticeCount()
         },
         setup() {
-            const mitter = getCurrentInstance()?.appContext.config.globalProperties.emitter
+            const $emitter = getCurrentInstance()?.appContext.config.globalProperties.$emitter
             const store = useStore()
             const router = useRouter()
 
@@ -78,7 +78,7 @@
             }
 
             const toggle = () => {
-                mitter.emit('expendCollapse')
+                $emitter.emit('expendCollapse')
             }
 
             return {

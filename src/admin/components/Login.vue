@@ -30,9 +30,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, getCurrentInstance } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import $services from '@C/services'
 import {useRouter} from 'vue-router'
 import {useStore} from 'vuex'
 
@@ -42,6 +41,8 @@ export default defineComponent({
         const store = useStore()
         const formSize = ref('default')
         const ruleFormRef = ref<FormInstance>()
+        const $storage = getCurrentInstance()?.appContext.config.globalProperties.$storage
+        const $services = getCurrentInstance()?.appContext.config.globalProperties.$services
         const formData = reactive({
             userName: '',
             userPwd: '',
@@ -65,12 +66,21 @@ export default defineComponent({
           formEl.resetFields()
         }
         const login = () => {
-          $services.userModule.login(formData).then(async (res: any) => {
+          $services.usersModule.login(formData).then(async (res: any) => {
             store.commit("saveUserInfo", res)
+            await loadAsyncRoutes()
             router.push({
             	path:'/welcome',
             })
           })
+        }
+        const loadAsyncRoutes = async () => {
+          let userInfo = $storage.getItem('userInfo') || {}
+          if (userInfo.token) {
+            try {
+              const { muneList } = await $services.usersModule.getPermissionList()
+            } catch (error) {}
+          }
         }
         return {
             formSize,
@@ -78,6 +88,7 @@ export default defineComponent({
             formData,
             rules,
             login,
+            loadAsyncRoutes,
             submitForm,
             resetForm
         }
