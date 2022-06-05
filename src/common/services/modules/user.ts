@@ -6,7 +6,7 @@ import http from '@C/utils/http'
 export default {
     login(params: Object) {
         return http({
-            url: '/users/login',
+            url: '/v1/user/login',
             method: 'post',
             data: params,
             mock: false
