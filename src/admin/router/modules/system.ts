@@ -1,8 +1,7 @@
 import frame from '@C/frame/frame.vue'
-import Welcome from '@admin/pages/home/welcome.vue'
 
 export default [{
-    name: 'home',
+    name: 'system',
     path: '/',
     meta: {
         title: '首页'
@@ -16,7 +15,7 @@ export default [{
             meta: {
                 title: '欢迎页'
             },
-            component: Welcome
+            component: () => import('@admin/pages/system/Welcome.vue')
         }
     ]
 }]

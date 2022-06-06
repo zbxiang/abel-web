@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 // 主页
-import HomeModules from './modules/home'
+import systemModules from './modules/system'
 
 const routes = [
     {
@@ -9,9 +9,9 @@ const routes = [
         meta: {
             title: '登录'
         },
-        component: () => import('@admin/components/Login.vue')
+        component: () => import('@admin/pages/login.vue')
     },
-    ...HomeModules
+    ...systemModules
 ]
 
 const router = createRouter({
