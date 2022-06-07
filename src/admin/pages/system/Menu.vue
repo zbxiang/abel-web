@@ -31,7 +31,20 @@
                     :prop="item.prop"
                     :label="item.label"
                     :width="item.width"
-                ></el-table-column>    
+                ></el-table-column>
+                <el-table-column label="操作" width="220">
+                    <el-button
+                        type="primary"
+                        size="mini">新增</el-button
+                    >
+                    <el-button
+                        size="mini">编辑</el-button
+                    >
+                    <el-button
+                        type="danger"
+                        size="mini">删除</el-button
+                    >
+                </el-table-column>  
             </el-table>
         </div>
     </div>
@@ -48,7 +61,7 @@ export default defineComponent({
             menuName: '',
             menuState: '',
         })
-        const columns = ref([
+        const columns = [
             {
                 label: '菜单名称',
                 prop: 'menuName',
@@ -61,6 +74,12 @@ export default defineComponent({
             {
                 label: '菜单类型',
                 prop: 'menuType',
+                formatter(row: any, column: any, value: any) {
+                    return {
+                        1: '菜单',
+                        2: '按钮'
+                    }[value];
+                },
             },
             {
                 label: '权限标识',
@@ -69,8 +88,33 @@ export default defineComponent({
             {
                 label: '路由地址',
                 prop: 'path',
+            },
+            {
+                label: '组件路径',
+                prop: 'component',
+            },
+            {
+                label: '菜单状态',
+                prop: 'menuState',
+                width: 90,
+                formatter(row: any, column: any, value: any) {
+                    return {
+                        1: '正常',
+                        2: '停用'
+                    }[value];
+                },
+            },
+            {
+                label: '创建时间',
+                prop: 'createTime',
+                formatter(row: any, column: any, value: any) {
+                    return {
+                        1: '正常',
+                        2: '停用'
+                    }[value];
+                },
             }
-        ])
+        ]
         const menuList = ref([])
         return {
             form,
