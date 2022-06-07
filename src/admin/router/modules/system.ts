@@ -1,21 +1,27 @@
-import frame from '@C/frame/frame.vue'
-
 export default [{
-    name: 'system',
+    name: 'home',
     path: '/',
     meta: {
         title: '首页'
     },
-    component: frame,
-    redirect: '/welcome',
+    component: () => import('@C/frame/frame.vue'),
+    redirect: '/Welcome',
     children: [
         {
-            name: 'welcome',
-            path: '/welcome',
+            name: 'Welcome',
+            path: '/Welcome',
             meta: {
                 title: '欢迎页'
             },
             component: () => import('@admin/pages/system/Welcome.vue')
+        },
+        {
+            name: 'Menu',
+            path: '/Menu',
+            meta: {
+                title: '欢迎页'
+            },
+            component: () => import('@admin/pages/system/Menu.vue')
         }
     ]
 }]
