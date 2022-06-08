@@ -1,5 +1,5 @@
-import usersModule from './modules/user.ts'
+import systemModule from './modules/system.ts'
 
 export default {
-    usersModule
+    systemModule
 }

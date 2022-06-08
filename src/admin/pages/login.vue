@@ -55,7 +55,7 @@ export default defineComponent({
             formEl.resetFields()
         }
         const login = () => {
-            $services.usersModule.login(formData).then(async (res: any) => {
+            $services.systemModule.login(formData).then(async (res: any) => {
                 store.commit("saveUserInfo", res)
                 await loadAsyncRoutes()
                 router.push({
@@ -67,7 +67,7 @@ export default defineComponent({
             let userInfo = $storage.getItem('userInfo') || {}
             if (userInfo.token) {
                 try {
-                    const { muneList } = await $services.usersModule.getPermissionList()
+                    const { muneList } = await $services.systemModule.getPermissionList()
                 } catch (error) { }
             }
         }

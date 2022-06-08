@@ -51,15 +51,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref, reactive, getCurrentInstance } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 
 export default defineComponent({
+    mounted() { 
+        this.getMenuList()
+    },
     setup() {
+        const $services = getCurrentInstance()?.appContext.config.globalProperties.$services
         const form = ref<FormInstance>()
         const queryForm = reactive({
             menuName: '',
-            menuState: '',
+            menuState: 1,
         })
         const columns = [
             {
@@ -74,7 +78,7 @@ export default defineComponent({
             {
                 label: '菜单类型',
                 prop: 'menuType',
-                formatter(row: any, column: any, value: any) {
+                formatter(row: string, column: string, value: number) {
                     return {
                         1: '菜单',
                         2: '按钮'
@@ -97,7 +101,7 @@ export default defineComponent({
                 label: '菜单状态',
                 prop: 'menuState',
                 width: 90,
-                formatter(row: any, column: any, value: any) {
+                formatter(row: string, column: string, value: number) {
                     return {
                         1: '正常',
                         2: '停用'
@@ -107,7 +111,7 @@ export default defineComponent({
             {
                 label: '创建时间',
                 prop: 'createTime',
-                formatter(row: any, column: any, value: any) {
+                formatter(row: string, column: string, value: number) {
                     return {
                         1: '正常',
                         2: '停用'
@@ -116,11 +120,21 @@ export default defineComponent({
             }
         ]
         const menuList = ref([])
+        // 菜单列表初始化
+        const getMenuList = async () => {
+            try {
+                let list = await $services.systemModule.getMenuList(queryForm)
+                menuList.value = list
+            } catch (e) {
+                throw new Error(e)
+            }
+        }
         return {
             form,
             queryForm,
             columns,
-            menuList
+            menuList,
+            getMenuList
         }
     }
 })
