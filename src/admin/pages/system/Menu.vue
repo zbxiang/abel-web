@@ -47,14 +47,21 @@
                 </el-table-column>  
             </el-table>
         </div>
+        <add-menu-dialog
+            title="用户新增"
+        ></add-menu-dialog>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, getCurrentInstance } from 'vue'
+import { defineComponent, defineAsyncComponent, ref, reactive, getCurrentInstance } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 
 export default defineComponent({
+    name: 'menu',
+    components: {
+        addMenuDialog: defineAsyncComponent(() => import('@admin/components/addMenu.vue')),
+    },  
     mounted() { 
         this.getMenuList()
     },
@@ -120,8 +127,10 @@ export default defineComponent({
             }
         ]
         const menuList = ref([])
+        // const title = '用户新增'
         // 菜单列表初始化
         const getMenuList = async () => {
+            console.log(queryForm)
             try {
                 let list = await $services.systemModule.getMenuList(queryForm)
                 menuList.value = list
@@ -134,7 +143,7 @@ export default defineComponent({
             queryForm,
             columns,
             menuList,
-            getMenuList
+            getMenuList,
         }
     }
 })

@@ -24,7 +24,7 @@ export default {
         return $http({
             url: '/menu/List',
             method: 'get',
-            data: {},
+            data: params,
             mock: false
         })
     },
