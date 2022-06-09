@@ -1,11 +1,12 @@
 <template>
     <el-drawer
         ref="drawerRef"
-        v-model="showModal"
+        v-model="drawerDialog"
         :title="title"
         :size="size"
-        :direction="rtl"
+        :direction="direction"
         custom-class="demo-drawer"
+        @close="handleClose(menuFormRef)"
     >
         <div class="demo-drawer__content">
             <el-form ref="menuFormRef" :model="menuForm" label-width="100px" :rules="rules">
@@ -45,8 +46,8 @@
             </el-form>
             <div class="demo-drawer__footer">
                 <span class="dialog-footer">
-                    <el-button>取消</el-button>
-                    <el-button type="primary">确定</el-button>
+                    <el-button @click="handleClose(menuFormRef)">取消</el-button>
+                    <el-button type="primary" @click="handleSubmit(menuFormRef)">确定</el-button>
                 </span>
             </div>
         </div>
@@ -54,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref, reactive, watch } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElDrawer } from 'element-plus'
 
@@ -67,9 +68,16 @@ export default defineComponent({
             default: () => {
                 return true
             }
+        },
+        size: [String, Number],
+        direction: {
+            type: String,
+            default: () => {
+                return 'rtl'
+            }
         }
     },
-    setup() {
+    setup(props, ctx) {
         const menuFormRef = ref<FormInstance>()
         const drawerRef = ref<InstanceType<typeof ElDrawer>>()
         const menuForm = reactive({
@@ -83,18 +91,49 @@ export default defineComponent({
             menuState: 1,
         })
         const rules = reactive<FormRules>({
-            userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-            userPwd: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+            menuName: [
+                { 
+                    required: true, 
+                    message: '请输入菜单名称', 
+                    trigger: 'blur'
+                },
+                { 
+                    min: 2,
+                    max: 10,
+                    message: '长度在2-8个字符', 
+                    trigger: 'blur'
+                },
+            ],
         })
         const menuList = ref([])
-        const handleClose = () => {
-
+        const drawerDialog = ref(false)
+        const handleClose = (formEl: FormInstance | undefined) => {
+            if (!formEl) return
+            formEl.resetFields()
+            ctx.emit('handleClose')
         }
+        const handleSubmit = async (formEl: FormInstance | undefined) => {
+            if (!formEl) return
+            await formEl.validate((valid, fields) => {
+                if (valid) {
+                    ctx.emit('handleSubmit', menuForm)
+                } else {
+                    console.log('error submit', fields)
+                }
+            })
+            
+        }
+        watch(() => props.showModal,(cur, prev) => {
+            drawerDialog.value = cur
+        },{})
         return {
+            menuFormRef,
             menuForm,
             rules,
             menuList,
-            handleClose
+            drawerDialog,
+            handleClose,
+            handleSubmit
         }
     }
 })

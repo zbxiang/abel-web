@@ -19,7 +19,7 @@
         </div>
         <div class="base-table">
             <div class="action">
-                <el-button type="primary" @click="handle(1)">新增</el-button>
+                <el-button type="primary" @click="addHandle(1)">新增</el-button>
             </div>
             <el-table :data="menuList" row-key="_id" :tree-props="{ children: 'children'}">
                 <el-table-column v-for="item in columns" :key="item.prop" :prop="item.prop" :label="item.label"
@@ -34,13 +34,15 @@
         <add-menu-drawer
             title="用户新增"
             :showModal="showModal"
+            @handleClose="handleClose"
+            @handleSubmit="handleSubmit"
         ></add-menu-drawer>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, ref, reactive, getCurrentInstance } from 'vue'
-import { FormInstance, FormRules } from 'element-plus'
+import { FormInstance } from 'element-plus'
 
 export default defineComponent({
     name: 'menu',
@@ -124,8 +126,15 @@ export default defineComponent({
             }
         }
         const showModal = ref(false)
-        const handle = (type:number) => { 
+        const addHandle = (type:number) => { 
             showModal.value = true
+        }
+        const handleClose = () => {
+            showModal.value = false
+        }
+        const handleSubmit = (menuForm: FormInstance | undefined) => {
+            console.log('dsgksdjgjsdjgds')
+            console.log(menuForm)
         }
         return {
             form,
@@ -134,7 +143,9 @@ export default defineComponent({
             menuList,
             showModal,
             getMenuList,
-            handle
+            addHandle,
+            handleClose,
+            handleSubmit
         }
     }
 })
