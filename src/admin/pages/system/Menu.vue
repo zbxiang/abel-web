@@ -19,48 +19,33 @@
         </div>
         <div class="base-table">
             <div class="action">
-                <el-button type="primary">新增</el-button>
+                <el-button type="primary" @click="handle(1)">新增</el-button>
             </div>
-            <el-table
-                :data="menuList"
-                row-key="_id"
-                :tree-props="{ children: 'children'}">
-                <el-table-column
-                    v-for="item in columns"
-                    :key="item.prop"
-                    :prop="item.prop"
-                    :label="item.label"
-                    :width="item.width"
-                ></el-table-column>
+            <el-table :data="menuList" row-key="_id" :tree-props="{ children: 'children'}">
+                <el-table-column v-for="item in columns" :key="item.prop" :prop="item.prop" :label="item.label"
+                    :width="item.width"></el-table-column>
                 <el-table-column label="操作" width="220">
-                    <el-button
-                        type="primary"
-                        size="mini">新增</el-button
-                    >
-                    <el-button
-                        size="mini">编辑</el-button
-                    >
-                    <el-button
-                        type="danger"
-                        size="mini">删除</el-button
-                    >
-                </el-table-column>  
+                    <el-button type="primary" size="mini">新增</el-button>
+                    <el-button size="mini">编辑</el-button>
+                    <el-button type="danger" size="mini">删除</el-button>
+                </el-table-column>
             </el-table>
         </div>
-        <add-menu-dialog
+        <add-menu-drawer
             title="用户新增"
-        ></add-menu-dialog>
+            :showModal="showModal"
+        ></add-menu-drawer>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, ref, reactive, getCurrentInstance } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import { FormInstance, FormRules } from 'element-plus'
 
 export default defineComponent({
     name: 'menu',
     components: {
-        addMenuDialog: defineAsyncComponent(() => import('@admin/components/addMenu.vue')),
+        AddMenuDrawer: defineAsyncComponent(() => import('@admin/components/addMenuDrawer.vue'))
     },  
     mounted() { 
         this.getMenuList()
@@ -138,12 +123,18 @@ export default defineComponent({
                 throw new Error(e)
             }
         }
+        const showModal = ref(false)
+        const handle = (type:number) => { 
+            showModal.value = true
+        }
         return {
             form,
             queryForm,
             columns,
             menuList,
+            showModal,
             getMenuList,
+            handle
         }
     }
 })
