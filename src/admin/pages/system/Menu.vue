@@ -19,11 +19,20 @@
         </div>
         <div class="base-table">
             <div class="action">
-                <el-button type="primary" @click="addHandle(1)">新增</el-button>
+                <el-button
+                    type="primary"
+                    @click="addHandle(1)"
+                >新增</el-button>
             </div>
             <el-table :data="menuList" row-key="_id" :tree-props="{ children: 'children'}">
-                <el-table-column v-for="item in columns" :key="item.prop" :prop="item.prop" :label="item.label"
-                    :width="item.width"></el-table-column>
+                <el-table-column
+                    v-for="item in columns"
+                    :key="item.prop"
+                    :prop="item.prop"
+                    :label="item.label"
+                    :width="item.width"
+                >
+                </el-table-column>
                 <el-table-column label="操作" width="220">
                     <el-button type="primary" size="mini">新增</el-button>
                     <el-button size="mini">编辑</el-button>
@@ -126,15 +135,20 @@ export default defineComponent({
             }
         }
         const showModal = ref(false)
+        let action = ''
+        // 新增菜单
         const addHandle = (type:number) => { 
             showModal.value = true
+            action = 'add'
         }
         const handleClose = () => {
             showModal.value = false
         }
-        const handleSubmit = (menuForm: FormInstance | undefined) => {
+        const handleSubmit = async (menuForm: FormInstance | undefined) => {
+            let params = { ...menuForm, action }
+            let res = await $services.systemModule.addMenu(params)
             console.log('dsgksdjgjsdjgds')
-            console.log(menuForm)
+            console.log(res)
         }
         return {
             form,
@@ -142,6 +156,7 @@ export default defineComponent({
             columns,
             menuList,
             showModal,
+            action,
             getMenuList,
             addHandle,
             handleClose,

@@ -35,5 +35,13 @@ export default {
             data: {},
             mock: false
         })
+    },
+    addMenu(params: Object) {
+        return $http({
+            url: '/menu/operate',
+            method: 'post',
+            data: params,
+            mock: false
+        })
     }
 }
