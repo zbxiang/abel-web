@@ -12,7 +12,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary">查询</el-button>
+                    <el-button type="primary" @click="query">查询</el-button>
                     <el-button>重置</el-button>
                 </el-form-item>
             </el-form>
@@ -24,7 +24,7 @@
                     @click="addHandle(1)"
                 >新增</el-button>
             </div>
-            <el-table :data="menuList" row-key="_id" :tree-props="{ children: 'children'}">
+            <el-table :data="tableData.lists" row-key="_id" :tree-props="{ children: 'children'}">
                 <el-table-column
                     v-for="item in columns"
                     :key="item.prop"
@@ -39,6 +39,19 @@
                     <el-button type="danger" size="mini">删除</el-button>
                 </el-table-column>
             </el-table>
+            <div class="pagination">
+                <span class="total">&lt; {{tableData.total}} &gt;</span>
+                <el-pagination
+                    v-model:currentPage="tableData.current"
+                    :page-sizes="[10, 20, 30, 40, 50]"
+                    :small="small"
+                    :background="background"
+                    layout="prev, pager, next, sizes"
+                    :total="tableData.total"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                ></el-pagination>
+            </div>
         </div>
         <add-menu-drawer
             title="用户新增"
@@ -51,7 +64,7 @@
 
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, ref, reactive, getCurrentInstance } from 'vue'
-import { FormInstance } from 'element-plus'
+import { FormInstance, ElMessage } from 'element-plus'
 
 export default defineComponent({
     name: 'menu',
@@ -122,20 +135,33 @@ export default defineComponent({
                 },
             }
         ]
-        const menuList = ref([])
+        const tableData = ref({
+            lists: [],
+            pageSize: 10,
+            pageNum: 1,
+            current: 1,
+            total: null,
+            pageTotal: null,
+        })
         // const title = '用户新增'
+        const showModal = ref(false)
+        const small = ref(false)
+        const background = ref(false)
+        let action = ''
         // 菜单列表初始化
         const getMenuList = async () => {
-            console.log(queryForm)
             try {
-                let list = await $services.systemModule.getMenuList(queryForm)
-                menuList.value = list
+                const { pageSize, pageNum } = tableData.value
+                const res = await $services.systemModule.getMenuList({...queryForm, pageSize, pageNum})
+                tableData.value.lists = res.lists
+                tableData.value.pageSize = res.pageSize
+                tableData.value.pageNum = res.pageNum
+                tableData.value.total = res.total
+                tableData.value.pageTotal = res.pageTotal
             } catch (e) {
                 throw new Error(e)
             }
         }
-        const showModal = ref(false)
-        let action = ''
         // 新增菜单
         const addHandle = (type:number) => { 
             showModal.value = true
@@ -147,20 +173,38 @@ export default defineComponent({
         const handleSubmit = async (menuForm: FormInstance | undefined) => {
             let params = { ...menuForm, action }
             let res = await $services.systemModule.addMenu(params)
-            console.log('dsgksdjgjsdjgds')
-            console.log(res)
+            showModal.value = false
+            ElMessage.success('操作成功')
+        }
+        const handleSizeChange = (val: number) => {
+            tableData.value.pageSize = val
+            getMenuList()
+        }
+        const handleCurrentChange = (val: number) => {
+            tableData.value.pageNum = val
+            getMenuList()
+        }
+        // 查询
+        const query = () => {
+
+            
         }
         return {
             form,
             queryForm,
             columns,
-            menuList,
+            tableData,
             showModal,
             action,
+            small,
+            background,
             getMenuList,
             addHandle,
             handleClose,
-            handleSubmit
+            handleSubmit,
+            handleSizeChange,
+            handleCurrentChange,
+            query
         }
     }
 })

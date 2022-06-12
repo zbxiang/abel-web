@@ -77,6 +77,12 @@ a{
   }
   .pagination {
     text-align: right;
-    padding: 10px;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .is-last{
+      margin-right: 0;
+    }
   }
 }

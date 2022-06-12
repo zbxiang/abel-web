@@ -75,10 +75,13 @@ export default defineComponent({
             userPwd: [{ required: true, message: '请输入密码', trigger: 'blur' }]
         })
         const menuList = ref([])
+      
         return {
             menuForm,
             rules,
-            menuList
+            menuList,
+            handleSizeChange,
+            handleCurrentChange
         }
     }
 })
