@@ -6,5 +6,5 @@
 </script>
 
 <style lang="scss">
-@import './../common/assets/style/style';
+@import './assets/style/_style.scss';
 </style>

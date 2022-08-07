@@ -25,8 +25,8 @@ export default defineConfig(({ mode }) => {
       alias: [
         { find: '@', replacement: resolve(__dirname, 'src') },
         { find: '@C', replacement: resolve(__dirname, 'src/common') },
-        { find: '@web', replacement: resolve(__dirname, 'src/web') },
-        { find: '@admin', replacement: resolve(__dirname, 'src/admin') }
+        { find: '@Web', replacement: resolve(__dirname, 'src/web') },
+        { find: '@Admin', replacement: resolve(__dirname, 'src/admin') }
       ],
       dedupe: [],
       conditions: [],

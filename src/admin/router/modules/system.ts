@@ -4,7 +4,7 @@ export default [{
     meta: {
         title: '首页'
     },
-    component: () => import('@C/frame/frame.vue'),
+    component: () => import('@Admin/common/frame/frame.vue'),
     redirect: '/Welcome',
     children: [
         {

@@ -15,6 +15,7 @@
                 </el-form-item>
             </el-form>
         </div>
+        <Toast v-if="show" :message="toastMessage"></Toast>
     </div>
 </template>
 
@@ -23,64 +24,68 @@ import { defineComponent, reactive, ref, getCurrentInstance } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import Toast, { useToastEffect } from '@C/components/Toast.vue'
+import storage from '../utils/storage'
+
+// 处理登录逻辑
+const useLoginEffect = (showToast?: any) => {
+    const router = useRouter()
+    const store = useStore()
+    const $storage = getCurrentInstance()?.appContext.config.globalProperties.$storage
+    const $api = getCurrentInstance()?.appContext.config.globalProperties.$api
+    const formSize = ref('default')
+    const ruleFormRef = ref<FormInstance>()
+    const formData = reactive({ userName: '', userPwd: '' })
+    const rules = reactive<FormRules>({
+        userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        userPwd: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+    })
+    const submitForm = async (formEl: FormInstance | undefined) => {
+        if (!formEl) return
+        await formEl.validate((valid, fields) => {
+            if (valid) {
+                login()
+            } else {
+                console.log('error submit!', fields)
+            }
+        })
+    }
+    const resetForm = (formEl: FormInstance | undefined) => {
+        if (!formEl) return
+        formEl.resetFields()
+    }
+    const login = async () => {
+        try {
+            const res = await $api.login(formData)
+            if (res.code == 200) {
+                store.commit("saveUserInfo", res.data)
+                await loadAsyncRoutes()
+            }else {
+                showToast('登录失败')
+            }
+        } catch (e) {
+            showToast('请求失败')
+        }
+    }
+    const loadAsyncRoutes = async () => {
+        let userInfo = storage.getItem('userInfo') || {}
+        if (userInfo.token) {
+            try {
+                const { menuList } = await $api.getPermissionList()
+            } catch (error) {}
+        }
+    }
+
+    return {formData, formSize, ruleFormRef, rules, submitForm, resetForm, login}
+}
 
 export default defineComponent({
+    name: 'Login',
+    components: {Toast},
     setup() {
-        const router = useRouter()
-        const store = useStore()
-        const formSize = ref('default')
-        const ruleFormRef = ref<FormInstance>()
-        const $storage = getCurrentInstance()?.appContext.config.globalProperties.$storage
-        const $services = getCurrentInstance()?.appContext.config.globalProperties.$services
-        const formData = reactive({
-            userName: '',
-            userPwd: '',
-        })
-        const rules = reactive<FormRules>({
-            userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-            userPwd: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-        })
-        const submitForm = async (formEl: FormInstance | undefined) => {
-            if (!formEl) return
-            await formEl.validate((valid, fields) => {
-                if (valid) {
-                    login()
-                } else {
-                    console.log('error submit!', fields)
-                }
-            })
-        }
-        const resetForm = (formEl: FormInstance | undefined) => {
-            if (!formEl) return
-            formEl.resetFields()
-        }
-        const login = () => {
-            $services.systemModule.login(formData).then(async (res: any) => {
-                store.commit("saveUserInfo", res)
-                await loadAsyncRoutes()
-                router.push({
-                    path: '/welcome',
-                })
-            })
-        }
-        const loadAsyncRoutes = async () => {
-            let userInfo = $storage.getItem('userInfo') || {}
-            if (userInfo.token) {
-                try {
-                    const { muneList } = await $services.systemModule.getPermissionList()
-                } catch (error) { }
-            }
-        }
-        return {
-            formSize,
-            ruleFormRef,
-            formData,
-            rules,
-            login,
-            loadAsyncRoutes,
-            submitForm,
-            resetForm
-        }
+        const { show, toastMessage, showToast } = useToastEffect()
+        const { formData, formSize, ruleFormRef, rules, submitForm, resetForm, login } = useLoginEffect(showToast)
+        return { show, toastMessage, showToast, formData, formSize, ruleFormRef, rules, submitForm, resetForm, login }
     },
 })
 </script>
