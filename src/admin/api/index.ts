@@ -20,12 +20,36 @@ export default {
             mock: false
         })
     },
-    roleOperate(params?: any) {
+    getRoleList(params?: any) {
         return http({
-            url: '/roles/operate',
+            url: '/roles/list',
+            method: 'get',
+            data: params,
+            mock: false
+        })
+    },
+    roleAdd(params?: any) {
+        return http({
+            url: '/roles/add',
             method: 'post',
             data: params,
             mock: false
         })
-    }
+    },
+    roleUpdate(params?: any) {
+        return http({
+            url: '/roles/update',
+            method: 'post',
+            data: params,
+            mock: false
+        })
+    },
+    roleDelete(params?: any) {
+        return http({
+            url: '/roles/delete',
+            method: 'post',
+            data: params,
+            mock: false
+        })
+    },
 }

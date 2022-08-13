@@ -30,19 +30,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent, reactive, ref, getCurrentInstance } from 'vue'
+import { defineComponent, defineAsyncComponent, ref } from 'vue'
 
-const usePermissionEffect = () => {
-    const drawerDialog = ref(false)
-    const curRoleName = ref()
-    const menuList = ref()
-    const handleClose = () => {}
-    const handleSubmit = () => {}
-    return { drawerDialog, curRoleName, menuList, handleClose, handleSubmit }
+const usePermissionEffect = (props?: any, ctx?: any) => {
+    const handleClose = () => {
+        ctx.emit('handleClose')
+    }
+    const handleSubmit = () => {
+        ctx.emit('handleSubmit')
+    }
+    return { handleClose, handleSubmit }
 }
 
 export default defineComponent({
     name: 'Permission',
+    emits: ['handleSubmit','handleClose'],
     props: {
         drawerDialog: {
             type: Boolean,
@@ -50,13 +52,23 @@ export default defineComponent({
                 return false
             }
         },
+        curRoleName: String,
+        menuList: Array
+
     },
     components: {
         Drawer: defineAsyncComponent(() => import('@C/components/Drawer.vue'))
     },
-    setup() {
-        const { drawerDialog, curRoleName, menuList, handleClose, handleSubmit } = usePermissionEffect()
-        return { drawerDialog, curRoleName, menuList, handleClose, handleSubmit }
+    setup(props, ctx) {
+        return { ...usePermissionEffect(props, ctx) }
     }
 })
 </script>
+
+<style lang="scss" scoped>
+    .dialog-footer{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
