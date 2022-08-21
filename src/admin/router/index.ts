@@ -22,12 +22,36 @@ const routes = [
                 component: () => import('@Admin/pages/Welcome.vue')
             },
             {
+                name: 'user',
+                path: '/user',
+                meta: {
+                    title: '用户列表'
+                },
+                component: () => import('@Admin/pages/User.vue')
+            },
+            {
                 name: 'role',
                 path: '/role',
                 meta: {
                     title: '角色列表'
                 },
                 component: () => import('@Admin/pages/Role.vue')
+            },
+            {
+                name: 'menu',
+                path: '/menu',
+                meta: {
+                    title: '菜单列表'
+                },
+                component: () => import('@Admin/pages/Menu.vue')
+            },
+            {
+                name: 'dept',
+                path: '/dept',
+                meta: {
+                    title: '部门列表'
+                },
+                component: () => import('@Admin/pages/Dept.vue')
             }
         ]
     },

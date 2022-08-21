@@ -47,18 +47,33 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-pagination
-                class="pagination"
-                v-model:currentPage="tableData.current"
-                :page-sizes="[10, 20, 30, 40, 50]"
-                small
-                background
-                layout="prev, pager, next, sizes"
-                :total="tableData.total"
-                :page-size="tableData.pageSize"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-            />
+            <!-- <div class="pagination">
+                <el-pagination
+                    class="pagination"
+                    v-model:currentPage="tableData.current"
+                    :page-sizes="[10, 20, 30, 40, 50]"
+                    small
+                    background
+                    layout="prev, pager, next, sizes"
+                    :total="tableData.total"
+                    :page-size="tableData.pageSize"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                />
+            </div> -->
+            <div class="pagination">
+                <span class="total">&lt; {{tableData.total}} &gt;</span>
+                <el-pagination
+                    v-model:currentPage="tableData.current"
+                    :page-sizes="[10, 20, 30, 40, 50]"
+                    small
+                    background
+                    layout="prev, pager, next, sizes"
+                    :total="tableData.total"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                ></el-pagination>
+            </div>
         </div>
     </div>
     <!-- 创建角色 -->
