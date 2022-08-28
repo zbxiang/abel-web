@@ -66,14 +66,20 @@ import type { FormInstance } from 'element-plus'
 /**
  * 处理新增角色逻辑
  */
-const useDrawerDialogEffect = (props?: any, ctx?: any) => {
+const useDrawerDialogEffect = (props: any, ctx: any) => {
+    
     const dialogFormRef = ref<FormInstance>()
+    
     const formData = props.formData
+    
     const rules = props.rules
+    
     const action = props.action
+
     const handleClose = (formEl: FormInstance | undefined) => {
         ctx.emit('handleClose', formEl)
     }
+    
     const handleSubmit = async (formEl: FormInstance | undefined) => {
         if (!formEl) return
         await formEl.validate((valid, fields) => {
@@ -84,14 +90,17 @@ const useDrawerDialogEffect = (props?: any, ctx?: any) => {
             }
         })
     }
+    
     const handleUser = (val: string) => {
         const [userId, userName, userEmail] = val.split('/')
         Object.assign(formData, {userId, userName, userEmail})
     }
-    const _resetForm = (formEl: FormInstance | undefined) => {
+    
+    const resetForm = (formEl: FormInstance | undefined) => {
         if (!formEl) return 
         formEl.resetFields()
     }
+    
     return {
         formData,
         dialogFormRef,
@@ -99,13 +108,13 @@ const useDrawerDialogEffect = (props?: any, ctx?: any) => {
         action,
         handleClose,
         handleUser,
-        handleSubmit, 
-        _resetForm
+        handleSubmit,
+        resetForm
     }
 }
 
 export default defineComponent({
-    name: 'Establish',
+    name: 'create',
     emits: ['handleSubmit','handleClose'],
     props: {
         drawerDialog: {

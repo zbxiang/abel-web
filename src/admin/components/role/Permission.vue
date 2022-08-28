@@ -33,18 +33,46 @@
 import { defineComponent, defineAsyncComponent, ref } from 'vue'
 
 const usePermissionEffect = (props?: any, ctx?: any) => {
+    const tree = ref()
+
     const handleClose = () => {
         ctx.emit('handleClose')
     }
+
     const handleSubmit = () => {
         ctx.emit('handleSubmit')
     }
-    return { handleClose, handleSubmit }
+
+    const getCheckedNodes = () => {
+        return tree.value.getCheckedNodes()
+    }
+
+    const getHalfCheckedKeys = () => {
+        return tree.value.getHalfCheckedKeys()
+    }
+
+    const setCheckedKeys = (data?: any) => {
+        tree.value.setCheckedKeys(data)
+    }
+    
+    return {
+        tree,
+        handleClose,
+        handleSubmit,
+        getCheckedNodes,
+        getHalfCheckedKeys,
+        setCheckedKeys
+    }
 }
 
 export default defineComponent({
     name: 'Permission',
-    emits: ['handleSubmit','handleClose'],
+    emits: [
+        'handleSubmit',
+        'handleClose',
+        'getCheckedNodes',
+        'getHalfCheckedKeys'
+    ],
     props: {
         drawerDialog: {
             type: Boolean,

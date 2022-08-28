@@ -75,7 +75,6 @@
     </div>
     <!-- 用户新增 -->
     <create-user
-        ref="drawerUserRef"
         :title="userTitle"
         :drawerDialog="userDrawerDialog"
         @handleClose="handleClose"
@@ -89,13 +88,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, defineAsyncComponent, toRaw, getCurrentInstance, nextTick } from "vue"
-import { FormInstance, ElMessage, FormRules, ElMessageBox} from "element-plus"
+import { defineComponent, reactive, ref, defineAsyncComponent, toRaw, getCurrentInstance, nextTick, markRaw } from "vue"
+import { FormInstance, ElMessage, FormRules, ElMessageBox, ElTable } from "element-plus"
+import type { Action } from 'element-plus'
+import { Delete } from '@element-plus/icons-vue'
 import utils from "./../utils/utils"
 
 const useQueryUserEffect = () => {
     const $api = getCurrentInstance()?.appContext.config.globalProperties.$api
-   
+    
+    interface User {
+        userId: string,
+        userName: string,
+        userEmail: string,
+        mobile: string,
+        job: string,
+        state: number,
+        roleList: any[],
+        deptId: any,
+        sex: number,
+        remark: string
+    }
+
     // 初始化用户表单对象
     const user = reactive({
         userId: '',
@@ -104,8 +118,6 @@ const useQueryUserEffect = () => {
     });
 
     const queryForm = ref<FormInstance>()
-
-    const drawerUserRef = ref<FormInstance>()
 
     const tableData = reactive({
         lists: [],
@@ -175,7 +187,9 @@ const useQueryUserEffect = () => {
         job: '',
         state: 1,
         roleList: [],
-        deptId: null
+        deptId: null,
+        sex: 0,
+        remark: ''
     })
 
     const rules = reactive({
@@ -224,6 +238,12 @@ const useQueryUserEffect = () => {
         [key: string]: any
     }
 
+    const multipleTableRef = ref<InstanceType<typeof ElTable>>()
+    
+    const multipleSelection = ref<User []>([])
+
+    const checkedUserIds = ref<string[]>([])
+
     // 查询
     const query = async () => {
         const { pageSize, pageNum } = tableData
@@ -260,9 +280,6 @@ const useQueryUserEffect = () => {
         userDrawerDialog.value = true
     }
 
-    // 批量删除
-    const handlePatchDel = () => {}
-
     // 编辑
     const handleEdit = (rows: object) => {
         action.value = 'edit'
@@ -272,18 +289,91 @@ const useQueryUserEffect = () => {
         })
     }
 
-    // 删除
-    const handleDel = (rows: object) => {}
-
-    const handleSelectionChange = () => {}
-
-    const handleClose = async (formEl: FormInstance | undefined) => {
-        drawerUserRef.value._resetForm(formEl)
-        action.value = 'add'
-        userDrawerDialog.value = false
+     // 批量删除
+    const handlePatchDel = () => {
+        if (checkedUserIds.value.length == 0) {
+            ElMessage({
+                message: '请选择要删除的用户',
+                type: 'error',
+            })
+            return
+        }
+        ElMessageBox.confirm('是否确认删除', {
+            type: 'warning',
+            icon: markRaw(Delete),
+            confirmButtonText: '确认',
+            cancelButtonText: '取消'
+        }).then(async () => { 
+            const res = await $api.deleteUser({
+                userIds: checkedUserIds.value
+            })
+            if (res.code == 200) {
+                if(res.data.affectedRows > 0) {
+                    ElMessage({
+                        message: res.msg,
+                        type: 'success',
+                    })
+                    query()
+                } else {
+                    ElMessage({
+                        message: '修改失败',
+                        type: 'success',
+                    })
+                }
+            }
+        }).catch((action: Action) => {
+            console.log(action)
+        })
     }
 
-    const handleSubmit = async (formData: any, formEl: FormInstance | undefined) => {
+    // 删除
+    const handleDel = (rows: any) => {
+        const { userId } = rows
+        ElMessageBox.confirm('是否需要删除这条记录', {
+            type: 'warning',
+            icon: markRaw(Delete),
+            confirmButtonText: '确认',
+            cancelButtonText: '取消'
+        }).then(async () => { 
+            const res = await $api.deleteUser({
+                userIds: [userId]
+            })
+            if (res.code == 200) {
+                ElMessage({
+                    message: res.msg,
+                    type: 'success',
+                })
+                query()
+            }
+        }).catch((action: Action) => {
+            console.log(action)
+        })
+    }
+
+    const handleSelectionChange = (val: User[]) => {
+        multipleSelection.value = val
+        let arr: string[] = []
+        val.map((item) => {
+            arr.push(item.userId)
+        })
+        checkedUserIds.value = arr
+    }
+
+    const handleClose = async () => {
+        action.value = 'add'
+        userDrawerDialog.value = false
+        userForm.userName = ''
+        userForm.userEmail = ''
+        userForm.mobile = ''
+        userForm.job = ''
+        userForm.state = 1
+        userForm.roleList = []
+        userForm.deptId = null
+        userForm.sex = 0
+        userForm.remark = ''
+    }
+
+    const handleSubmit = async (formData: any) => {
         try {
             let res
             let params = toRaw(formData)
@@ -298,7 +388,7 @@ const useQueryUserEffect = () => {
                     message: res.msg,
                     type: 'success',
                 })
-                handleClose(formEl)
+                handleClose()
                 query()
             }
         } catch(e) {
@@ -349,13 +439,15 @@ const useQueryUserEffect = () => {
         tableData,
         columns,
         userForm,
-        drawerUserRef,
         rules,
         userTitle,
         action,
         userDrawerDialog,
         roleList,
         deptList,
+        multipleTableRef,
+        multipleSelection,
+        checkedUserIds,
         query,
         handleReset,
         handleCreate,
@@ -380,7 +472,7 @@ export default defineComponent({
         this.getDeptList()
     },
     components: {
-        createUser: defineAsyncComponent(() => import('@Admin/components/user/create.vue'))
+        createUser: defineAsyncComponent(() => import('@Admin/components/user/Create.vue'))
     },  
     setup() {
         return { ...useQueryUserEffect() }

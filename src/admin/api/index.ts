@@ -68,6 +68,14 @@ export default {
             mock: false
         })
     },
+    updatePermission(params?: any) {
+        return http({
+            url: '/roles/update/permission',
+            method: 'post',
+            data: params,
+            mock: false
+        })
+    },
     getMenuList(params?: any) {
         return http({
             url: '/menu/List',
@@ -118,7 +126,7 @@ export default {
     },
     addUser(params?: any) {
         return http({
-            url: '/users/addUser',
+            url: '/users/add',
             method: 'post',
             data: params,
             mock: false
@@ -126,7 +134,15 @@ export default {
     },
     updateUser(params?: any) {
         return http({
-            url: '/users/updateUser',
+            url: '/users/update',
+            method: 'post',
+            data: params,
+            mock: false
+        })
+    },
+    deleteUser(params?: any) {
+        return http({
+            url: '/users/delete',
             method: 'post',
             data: params,
             mock: false

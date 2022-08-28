@@ -62,30 +62,45 @@ import type { FormInstance } from 'element-plus'
  */
 const useDrawerDialogEffect = (props?: any, ctx?: any) => {
     const formRef = ref<FormInstance>()
+
     const formData = props.formData
+
     const rules = props.rules
+
     const handleClose = (formEl: FormInstance | undefined) => {
-        ctx.emit('handleClose', formEl)
+        ctx.emit('handleClose')
+        resetForm(formEl)
     }
+
     const handleSubmit = async (formEl: FormInstance | undefined) => {
         if (!formEl) return
         await formEl.validate((valid, fields) => {
             if (valid) {
-                ctx.emit('handleSubmit', formData, formEl)
+                ctx.emit('handleSubmit', formData)
+                resetForm(formEl)
             } else {
                 console.log('error submit!', fields)
             }
         })
     }
-    const _resetForm = (formEl: FormInstance | undefined) => {
-        if (!formEl) return 
+
+    const resetForm = (formEl: FormInstance | undefined) => {
+        if (!formEl) return
         formEl.resetFields()
     }
-    return { formData, formRef, rules, handleClose, handleSubmit, _resetForm}
+
+    return {
+        formData,
+        formRef,
+        rules,
+        handleClose,
+        handleSubmit,
+        resetForm
+    }
 }
 
 export default defineComponent({
-    name: 'Establish',
+    name: 'Create',
     emits: ['handleSubmit','handleClose'],
     props: {
         drawerDialog: {
@@ -96,7 +111,8 @@ export default defineComponent({
         },
         title: String,
         rules: Object,
-        formData: Object
+        formData: Object,
+        menuList: Array
     },
     components: {
         Drawer: defineAsyncComponent(() => import('@C/components/Drawer.vue'))

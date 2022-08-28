@@ -51,7 +51,7 @@
 
     <!-- 新增/编辑部门 -->
     <create-dept
-        ref="drawerUserRef"
+        ref="drawerDeptRef"
         :title="deptTitle"
         :drawerDialog="deptDrawerDialog"
         @handleClose="handleClose"
@@ -82,6 +82,8 @@ const useQueryDeptEffect = (props?:any, ctx?:any) => {
     })
 
     const queryFormRef = ref<FormInstance>()
+
+    const drawerDeptRef = ref()
 
     const deptTitle = ref('创建部门')
 
@@ -182,7 +184,11 @@ const useQueryDeptEffect = (props?:any, ctx?:any) => {
     const handleDel = () => {}
 
     // 关闭
-    const handleClose = (formEl: FormInstance | undefined) => {}
+    const handleClose = (formEl: FormInstance | undefined) => {
+        action.value = 'add'
+        deptDrawerDialog.value = false
+        drawerDeptRef.value.resetForm(formEl)
+    }
 
     // 提交
     const handleSubmit = async (formData: any, formEl: FormInstance | undefined) => {
@@ -214,6 +220,7 @@ const useQueryDeptEffect = (props?:any, ctx?:any) => {
         columns,
         deptTitle,
         deptDrawerDialog,
+        drawerDeptRef,
         deptForm,
         rules,
         action,
@@ -233,7 +240,7 @@ const useQueryDeptEffect = (props?:any, ctx?:any) => {
 export default defineComponent({
     name: 'Dept',
     components: {
-        createDept: defineAsyncComponent(() => import('../components/dept/create.vue')),
+        createDept: defineAsyncComponent(() => import('../components/dept/Create.vue')),
     },
     created() {
         // 查询部门列表

@@ -24,13 +24,14 @@
                     @click="handleAdd(1)"
                 >新增</el-button>
             </div>
-            <el-table :data="tableData.lists" row-key="_id" :tree-props="{ children: 'children'}">
+            <el-table :data="menuList" row-key="_id" :tree-props="{ children: 'children'}">
                 <el-table-column
                     v-for="item in columns"
                     :key="item.prop"
                     :prop="item.prop"
                     :label="item.label"
                     :width="item.width"
+                    :formatter="item.formatter"
                 >
                 </el-table-column>
                 <el-table-column label="操作" width="220">
@@ -52,35 +53,22 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pagination">
-                <span class="total">&lt; {{tableData.total}} &gt;</span>
-                <el-pagination
-                    v-model:currentPage="tableData.current"
-                    :page-sizes="[10, 20, 30, 40, 50]"
-                    small
-                    background
-                    layout="prev, pager, next, sizes"
-                    :total="tableData.total"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                ></el-pagination>
-            </div>
         </div>
     </div>
     <!-- 新增菜单 -->
-    <establish
-        ref="drawerMenuRef"
+    <create-menu
         :title="MenuTitle"
         :drawerDialog="MenuDrawerDialog"
         @handleClose="handleClose"
         @handleSubmit="handleSubmit" 
         :formData="menuForm" 
         :rules="rules"
-    ></establish>
+        :menuList="menuList"
+    ></create-menu>
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent, ref, reactive, getCurrentInstance, markRaw } from 'vue'
+import { defineComponent, defineAsyncComponent, ref, reactive, toRaw, getCurrentInstance, markRaw } from 'vue'
 import { FormInstance, ElMessage, FormRules, ElMessageBox } from 'element-plus'
 import { nextTick } from 'process'
 import type { Action } from 'element-plus'
@@ -111,11 +99,11 @@ const useQueryMenuEffect = () => {
         {
             label: '菜单类型',
             prop: 'menuType',
-            formatter(row: string, column: string, value: number) {
+            formatter(row: string, column: string, cellValue: number, index: number) {
                 return {
                     1: '菜单',
                     2: '按钮'
-                }[value];
+                }[cellValue];
             },
         },
         {
@@ -134,11 +122,11 @@ const useQueryMenuEffect = () => {
             label: '菜单状态',
             prop: 'menuState',
             width: 90,
-            formatter(row: string, column: string, value: number) {
+            formatter(row: string, column: string, cellValue: number, index: number) {
                 return {
                     1: '正常',
                     2: '停用'
-                }[value];
+                }[cellValue];
             },
         },
         {
@@ -157,20 +145,14 @@ const useQueryMenuEffect = () => {
         }
     ])
 
-    const tableData = reactive({
-        lists: [],
-        pageSize: 10,
-        pageNum: 1,
-        current: ref(1),
-        total: null,
-        pageTotal: null,
-    })
+    const menuList = ref([])
 
     interface LooseObject {
         [key: string]: any
     }
     
     const menuForm = reactive({
+        _id: null,
         parentId: [null],
         menuType: 1,
         menuName: '',
@@ -198,8 +180,6 @@ const useQueryMenuEffect = () => {
         ],
     })
 
-    const drawerMenuRef = ref<FormInstance>()
-
     let action = 'add'
 
     const MenuTitle = ref('新增菜单')
@@ -212,19 +192,12 @@ const useQueryMenuEffect = () => {
     const query = async () => {
         try {
             const query: LooseObject = {}
-            const { pageSize, pageNum } = tableData
             const { menuName, menuState } = queryForm
             menuName && (query.menuName = menuName)
             menuState && (query.menuState = menuState)
-            query.pageSize = pageSize
-            query.pageNum = pageNum
             const res = await $api.getMenuList(query)
             if (res.code == 200) {
-                tableData.lists = res.data.lists
-                tableData.pageSize = res.data.pageSize
-                tableData.pageNum = res.data.pageNum
-                tableData.total = res.data.total
-                tableData.pageTotal = res.data.pageTotal
+                menuList.value = res.data
             }
         } catch (e) {
             throw new Error(e)
@@ -250,7 +223,6 @@ const useQueryMenuEffect = () => {
         action = 'edit'
         nextTick(() => {
             Object.assign(menuForm, rows)
-            console.log(menuForm)
         })
     }
 
@@ -278,29 +250,21 @@ const useQueryMenuEffect = () => {
     }
 
     /**
-     * 翻页 页数
-     */
-    const handleCurrentChange = (val: number) => {
-        tableData.pageNum = val
-        query()
-    }
-
-    /**
-     * 翻页 条数
-     */
-    const handleSizeChange = (val: number) => {
-        tableData.pageNum = 1
-        tableData.pageSize = val
-        query()
-    }
-
-    /**
      * 关闭
      */
-    const handleClose = (formEl: FormInstance | undefined) => {
+    const handleClose = () => {
         MenuDrawerDialog.value = false
         MenuTitle.value = '新增菜单'
-        drawerMenuRef.value._resetForm(formEl)
+        menuForm._id = null
+        menuForm.parentId = [null]
+        menuForm.menuType = 1
+        menuForm.menuName =  ''
+        menuForm.icon = ''
+        menuForm.url = ''
+        menuForm.menuCode = ''
+        menuForm.component = ''
+        menuForm.menuState = 1
+        menuForm.sort = null
     }
 
     /**
@@ -309,18 +273,19 @@ const useQueryMenuEffect = () => {
     const handleSubmit = async (options: any, formEl: FormInstance | undefined) => {
         try {
             let res
+            let params = toRaw(options)
             if (action === 'add') {
-                res = await $api.menuAdd(options)
+                res = await $api.menuAdd(params)
             }
             if(action === 'edit') {
-                res = await $api.menuUpdate(options)
+                res = await $api.menuUpdate(params)
             }
             if (res.code == 200) {
                 ElMessage({
                     message: res.msg,
                     type: 'success',
                 })
-                handleClose(formEl)
+                handleClose()
                 query()
             }
         } catch(e) {
@@ -331,18 +296,15 @@ const useQueryMenuEffect = () => {
     return {
         queryForm,
         columns,
-        tableData,
+        menuList,
         MenuTitle,
         MenuDrawerDialog,
-        drawerMenuRef,
         menuForm,
         rules,
         query,
         handleAdd,
         handleEdit,
         handleDelete,
-        handleCurrentChange,
-        handleSizeChange,
         handleClose,
         handleSubmit
     }
@@ -351,7 +313,7 @@ const useQueryMenuEffect = () => {
 export default defineComponent({
     name: 'menu',
     components: {
-        Establish: defineAsyncComponent(() => import('@Admin/components/menu/Establist.vue'))
+        createMenu: defineAsyncComponent(() => import('@Admin/components/menu/Create.vue'))
     },  
     created() {
         // 查询菜单列表 

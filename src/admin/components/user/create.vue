@@ -33,6 +33,13 @@
                 <el-form-item label="岗位" prop="job">
                     <el-input v-model="formData.job" placeholder="请输入岗位" />
                 </el-form-item>
+                <el-form-item label="性别" prop="sex">
+                    <el-select v-model="formData.sex">
+                        <el-option :value="0" label="男"></el-option>
+                        <el-option :value="1" label="女"></el-option>
+                        <el-option :value="2" label="其他"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="状态" prop="state">
                     <el-select v-model="formData.state">
                         <el-option :value="1" label="在职"></el-option>
@@ -65,6 +72,17 @@
                         style="width: 100%"
                     ></el-cascader>
                 </el-form-item>
+                <el-form-item label="描述" prop="remark">
+                    <el-input
+                        type="textarea"
+                        :rows="8"
+                        v-model="formData.remark"
+                        maxlength="200"
+                        show-word-limit
+                        resize="none"
+                        placeholder="请输入描述"
+                    />
+                </el-form-item>
             </el-form>
             <div class="drawer__footer">
                 <span class="dialog-footer">
@@ -85,26 +103,34 @@ import type { FormInstance } from 'element-plus'
  */
 const useDrawerDialogEffect = (props?: any, ctx?: any) => {
     const dialogFormRef = ref<FormInstance>()
+    
     const formData = props.formData
+    
     const rules = props.rules
+    
     const action = props.action
+    
     const handleClose = (formEl: FormInstance | undefined) => {
-        ctx.emit('handleClose', formEl)
+        ctx.emit('handleClose')
+        resetForm(formEl)
     }
+    
     const handleSubmit = async (formEl: FormInstance | undefined) => {
         if (!formEl) return
         await formEl.validate((valid, fields) => {
             if (valid) {
-                ctx.emit('handleSubmit', formData, formEl)
+                ctx.emit('handleSubmit', formData)
             } else {
                 console.log('error submit!', fields)
             }
         })
     }
-    const _resetForm = (formEl: FormInstance | undefined) => {
+    
+    const resetForm = (formEl: FormInstance | undefined) => {
         if (!formEl) return 
         formEl.resetFields()
     }
+    
     return {
         formData,
         dialogFormRef,
@@ -112,12 +138,12 @@ const useDrawerDialogEffect = (props?: any, ctx?: any) => {
         action,
         handleClose,
         handleSubmit, 
-        _resetForm
+        resetForm
     }
 }
 
 export default defineComponent({
-    name: 'Establish',
+    name: 'addUser',
     emits: ['handleSubmit','handleClose'],
     props: {
         drawerDialog: {
