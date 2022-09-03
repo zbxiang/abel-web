@@ -11,8 +11,10 @@ import mitt from 'mitt'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 const emitter = mitt();
 
-console.log("环境变量=>", import.meta.env)
+// console.log("环境变量=>", import.meta.env)
+
 const app = createApp(App)
+
 app.directive('has', {
     beforeMount: function (el, binding) {
         let actionList = storage.getItem('actionList')
@@ -26,6 +28,7 @@ app.directive('has', {
         }
     }
 })
+
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }

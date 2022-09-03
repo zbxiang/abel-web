@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from '@Admin/components/frame/index.vue'
-// 主页
-// import systemModules from './modules/system'
+import $storage from './../utils/storage'
+import $api from './../api'
+import utils from './../utils/utils'
+const modules = import.meta.glob('./../pages/*/*.vue')
 
 const routes = [
     {
@@ -10,7 +11,7 @@ const routes = [
         meta: {
             title: '首页'
         },
-        component: Home,
+        component: () => import('@Admin/components/layout.vue'),
         redirect: '/welcome',
         children: [
             {
@@ -20,38 +21,6 @@ const routes = [
                     title: '欢迎来到Zbxiang后台管理系统'
                 },
                 component: () => import('@Admin/pages/Welcome.vue')
-            },
-            {
-                name: 'user',
-                path: '/user',
-                meta: {
-                    title: '用户列表'
-                },
-                component: () => import('@Admin/pages/User.vue')
-            },
-            {
-                name: 'role',
-                path: '/role',
-                meta: {
-                    title: '角色列表'
-                },
-                component: () => import('@Admin/pages/Role.vue')
-            },
-            {
-                name: 'menu',
-                path: '/menu',
-                meta: {
-                    title: '菜单列表'
-                },
-                component: () => import('@Admin/pages/Menu.vue')
-            },
-            {
-                name: 'dept',
-                path: '/dept',
-                meta: {
-                    title: '部门列表'
-                },
-                component: () => import('@Admin/pages/Dept.vue')
             }
         ]
     },
@@ -62,8 +31,7 @@ const routes = [
             title: '登录'
         },
         component: () => import('@Admin/pages/Login.vue')
-    },
-    // ...systemModules
+    }
 ]
 
 const router = createRouter({
@@ -72,9 +40,34 @@ const router = createRouter({
 })
 
 async function loadAsyncRoutes() {
-    console.log('sdlgjdskjgksdjgkjdskjgjsdg')
+    let userInfo = $storage.getItem('userInfo') || {}
+    if (userInfo.token) {
+        try {
+            const res = await $api.getPermissionList()
+            if (res.code == 200) {
+                let menuList = res.data.menuList
+                let routes = utils.generateRoute(menuList)
+                routes.map(route => {
+                    route.component = modules[`./../pages/${route.component}.vue`]
+                    router.addRoute("home", route);
+                })
+            }
+        } catch (error) {
+
+        }
+    }
 }
 
 await loadAsyncRoutes()
+
+// 导航守卫
+router.beforeEach((to: any, from: any, next) => {
+    if (router.hasRoute(to.name)) {
+        document.title = to.meta.title
+        next()
+    } else {
+        next('/404')
+    }
+})
 
 export default router

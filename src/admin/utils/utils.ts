@@ -23,15 +23,15 @@
         }
         return fmt;
     },
-    generateRoute(menuList) {
-        let routes = []
-        const deepList = (list) => {
+    generateRoute(menuList: any[]) {
+        let routes: any[] = []
+        const deepList = (list: any[]) => {
             while (list.length) {
                 let item = list.pop()
                 if (item.action) {
                     routes.push({
                         name: item.component,
-                        path: item.path,
+                        url: item.url,
                         meta: {
                             title: item.menuName
                         },

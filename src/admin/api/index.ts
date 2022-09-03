@@ -12,6 +12,14 @@ export default {
             data: params
         })
     },
+    noticeCount() {
+        return http({
+            url: '/leave/count',
+            method: 'get',
+            data: {},
+            mock: false
+        })
+    },
     getPermissionList() {
         return http({
             url: '/users/getPermissionList',
@@ -150,7 +158,7 @@ export default {
     },
     addDept(params?:any) {
         return http({
-            url: '/dept/addDept',
+            url: '/dept/add',
             method: 'post',
             data: params,
             mock: false

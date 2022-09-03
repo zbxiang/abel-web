@@ -77,14 +77,15 @@ const useDrawerDialogEffect = (props: any, ctx: any) => {
     const action = props.action
 
     const handleClose = (formEl: FormInstance | undefined) => {
-        ctx.emit('handleClose', formEl)
+        ctx.emit('handleClose')
+        resetForm(formEl)
     }
     
     const handleSubmit = async (formEl: FormInstance | undefined) => {
         if (!formEl) return
         await formEl.validate((valid, fields) => {
             if (valid) {
-                ctx.emit('handleSubmit', formData, formEl)
+                ctx.emit('handleSubmit', formData)
             } else {
                 console.log('error submit!', fields)
             }

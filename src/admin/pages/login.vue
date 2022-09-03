@@ -11,11 +11,10 @@
                         placeholder="请输入密码" />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" class="btn-login" @click="submitForm(ruleFormRef)">登录</el-button>
+                    <el-button type="primary" class="btn-login" @click="login(ruleFormRef)">登录</el-button>
                 </el-form-item>
             </el-form>
         </div>
-        <Toast v-if="show" :message="toastMessage"></Toast>
     </div>
 </template>
 
@@ -24,68 +23,76 @@ import { defineComponent, reactive, ref, getCurrentInstance } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import Toast, { useToastEffect } from '@C/components/Toast.vue'
-import storage from '../utils/storage'
-
-// 处理登录逻辑
-const useLoginEffect = (showToast?: any) => {
-    const router = useRouter()
-    const store = useStore()
-    const $storage = getCurrentInstance()?.appContext.config.globalProperties.$storage
-    const $api = getCurrentInstance()?.appContext.config.globalProperties.$api
-    const formSize = ref('default')
-    const ruleFormRef = ref<FormInstance>()
-    const formData = reactive({ userName: '', userPwd: '' })
-    const rules = reactive<FormRules>({
-        userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-        userPwd: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-    })
-    const submitForm = async (formEl: FormInstance | undefined) => {
-        if (!formEl) return
-        await formEl.validate((valid, fields) => {
-            if (valid) {
-                login()
-            } else {
-                console.log('error submit!', fields)
-            }
-        })
-    }
-    const resetForm = (formEl: FormInstance | undefined) => {
-        if (!formEl) return
-        formEl.resetFields()
-    }
-    const login = async () => {
-        try {
-            const res = await $api.login(formData)
-            if (res.code == 200) {
-                store.commit("saveUserInfo", res.data)
-                await loadAsyncRoutes()
-            }else {
-                showToast('登录失败')
-            }
-        } catch (e) {
-            showToast('请求失败')
-        }
-    }
-    const loadAsyncRoutes = async () => {
-        let userInfo = storage.getItem('userInfo') || {}
-        if (userInfo.token) {
-            try {
-                const { menuList } = await $api.getPermissionList()
-            } catch (error) {}
-        }
-    }
-
-    return {formData, formSize, ruleFormRef, rules, submitForm, resetForm, login}
-}
+import $storage from '../utils/storage'
+import utils from '../utils/utils'
+const modules = import.meta.glob('./../pages/*/*.vue')
 
 export default defineComponent({
     name: 'Login',
-    components: {Toast},
     setup() {
-        const { show, toastMessage, showToast } = useToastEffect()
-        const { formData, formSize, ruleFormRef, rules, submitForm, resetForm, login } = useLoginEffect(showToast)
-        return { show, toastMessage, showToast, formData, formSize, ruleFormRef, rules, submitForm, resetForm, login }
+        const $api = getCurrentInstance()?.appContext.config.globalProperties.$api
+        const store = useStore()
+        const router = useRouter()
+
+        const formData = reactive({
+            userName: 'admin',
+            userPwd: '123456'
+        })
+        
+        const rules = reactive<FormRules>({
+            userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+            userPwd: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+        })
+
+        const formSize = ref('default')
+
+        const ruleFormRef = ref<FormInstance>()
+
+        /**
+         * 登录
+         */
+        const login = async (formEl: FormInstance | undefined) => {
+            if (!formEl) return
+            await formEl.validate(async (valid, fields) => {
+                if (valid) {
+                    const res = await $api.login(formData)
+                    if (res.code == 200) {
+                        store.commit("saveUserInfo", res.data)
+                        await loadAsyncRoutes()
+                        router.push('/welcome')
+                    }
+                } else {
+                    return false
+                }
+            })
+        }
+
+        /**
+         * 动态加载路由
+         */
+        const loadAsyncRoutes = async () => {
+            let userInfo = $storage.getItem('userInfo') || {}
+            if (userInfo.token) {
+                try {
+                    const { menuList } = await $api.getPermissionList()
+                    let routes = utils.generateRoute(menuList)
+                    routes.map((route) => {
+                        modules[`./../pages/${route.component}.vue`]
+                        router.addRoute('home', route)
+                    })
+                } catch (error) {}
+            }
+        }
+
+        return {
+            formData,
+            rules,
+            formSize,
+            ruleFormRef,
+            store,
+            router,
+            login
+        }
     },
 })
 </script>

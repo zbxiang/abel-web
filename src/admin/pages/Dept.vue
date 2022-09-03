@@ -51,7 +51,6 @@
 
     <!-- 新增/编辑部门 -->
     <create-dept
-        ref="drawerDeptRef"
         :title="deptTitle"
         :drawerDialog="deptDrawerDialog"
         @handleClose="handleClose"
@@ -76,14 +75,21 @@ import utils from '../utils/utils'
  */
 const useQueryDeptEffect = (props?:any, ctx?:any) => {
     const $api = getCurrentInstance()?.appContext.config.globalProperties.$api
-    
+
+    interface deptType {
+        parentId: any[],
+        deptName: string,
+        user: string,
+        userEmail: string,
+        userId: string,
+        userName: string,
+    }
+
     const dept = reactive({
         deptName: ''
     })
 
     const queryFormRef = ref<FormInstance>()
-
-    const drawerDeptRef = ref()
 
     const deptTitle = ref('创建部门')
 
@@ -174,24 +180,38 @@ const useQueryDeptEffect = (props?:any, ctx?:any) => {
     // 创建
     const handleOpen = () => {
         action.value = 'add'
+        deptTitle.value = '创建部门'
         deptDrawerDialog.value = true
     }
 
     // 编辑
-    const handleEdit = () => {}
+    const handleEdit = (rows: deptType) => {
+        action.value = 'edit'
+        deptTitle.value = '编辑部门'
+        deptDrawerDialog.value = true
+        nextTick(() => {
+            Object.assign(deptForm, rows, {
+                user: `${rows.userId}/${rows.userName}/${rows.userEmail}`
+            })
+        })
+    }
 
     // 删除
     const handleDel = () => {}
 
     // 关闭
-    const handleClose = (formEl: FormInstance | undefined) => {
+    const handleClose = () => {
         action.value = 'add'
+        deptTitle.value = '创建部门'
         deptDrawerDialog.value = false
-        drawerDeptRef.value.resetForm(formEl)
+        deptForm.parentId = [null]
+        deptForm.deptName = ''
+        deptForm.user = ''
+        deptForm.userEmail = ''
     }
 
     // 提交
-    const handleSubmit = async (formData: any, formEl: FormInstance | undefined) => {
+    const handleSubmit = async (formData: any) => {
         try {
             let res
             let params = toRaw(formData)
@@ -206,7 +226,7 @@ const useQueryDeptEffect = (props?:any, ctx?:any) => {
                     message: res.msg,
                     type: 'success',
                 })
-                handleClose(formEl)
+                handleClose()
                 query()
             }
         } catch(e) {
@@ -220,7 +240,6 @@ const useQueryDeptEffect = (props?:any, ctx?:any) => {
         columns,
         deptTitle,
         deptDrawerDialog,
-        drawerDeptRef,
         deptForm,
         rules,
         action,
