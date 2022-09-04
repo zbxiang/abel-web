@@ -1,12 +1,12 @@
 <template>
     <div class="exception">
-        <img src="@/assets/images/404.jpeg" alt="" />
+        <img src="@Admin/assets/images/404.jpeg" alt="" />
         <el-button @click="goHome" class="btn-home">回首页</el-button>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent, getCurrentInstance, ref, Ref} from 'vue'
+import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({

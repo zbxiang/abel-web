@@ -68,8 +68,8 @@ import $storage from '../utils/storage'
 export default defineComponent({
     name: 'layout',
     components: {
-        TreeMenu: defineAsyncComponent(() => import('./TreeMenu.vue')),
-        BreadCrumb: defineAsyncComponent(() => import('./BreadCrumb.vue')),
+        BreadCrumb: defineAsyncComponent(() => import('@Admin/components/BreadCrumb.vue')),
+        TreeMenu: defineAsyncComponent(() => import('@Admin/components/TreeMenu.vue'))
     },
     created() {
         this.getMenuList()
@@ -115,7 +115,7 @@ export default defineComponent({
                     userMenu.value = menuList
                 }
             } catch (error: any) {
-                console.log(error)
+              throw new Error(error)
             }
         }
 

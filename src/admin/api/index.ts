@@ -92,17 +92,17 @@ export default {
             mock: false
         })
     },
-    menuAdd(params?: any) {
+    addMenu(params?: any) {
         return http({
-            url: '/menu/addMenu',
+            url: '/menu/add',
             method: 'post',
             data: params,
             mock: false
         })
     },
-    menuUpdate(params?: any) {
+    updateMenu(params?: any) {
         return http({
-            url: '/menu/updateMenu',
+            url: '/menu/update',
             method: 'post',
             data: params,
             mock: false

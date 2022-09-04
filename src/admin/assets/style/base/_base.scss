@@ -76,13 +76,13 @@ a{
     border-bottom: 1px solid #ece8e8;
   }
   .pagination {
-    text-align: right;
-    padding: 10px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    .is-last{
-      margin-right: 0;
+    padding: 10px;
+    .total{
+      font-size: 14px;
+      color: #999;
     }
   }
 }

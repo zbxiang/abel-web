@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import ElementPlus from 'element-plus'
 import 'element-plus/theme-chalk/index.css'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import http from './utils/http'
 import api from './api'
 import storage from './utils/storage'
@@ -36,8 +37,8 @@ app.config.globalProperties.$http = http
 app.config.globalProperties.$api = api
 app.config.globalProperties.$storage = storage
 app.config.globalProperties.$emitter = emitter
-app.use(router).use(store).use(ElementPlus, { size: 'small' }).mount('#app')
-
+app.use(router).use(store).use(ElementPlus, { size: 'small', locale: zhCn, }).mount('#app')
+// app.use(router).use(store).mount('#app')
 
 
 

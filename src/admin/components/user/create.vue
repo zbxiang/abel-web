@@ -95,55 +95,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent, ref } from 'vue'
+import { defineComponent, defineAsyncComponent, ref, PropType, toRefs } from 'vue'
 import type { FormInstance } from 'element-plus'
 
-/**
- * 处理新增角色逻辑
- */
-const useDrawerDialogEffect = (props?: any, ctx?: any) => {
-    const dialogFormRef = ref<FormInstance>()
-    
-    const formData = props.formData
-    
-    const rules = props.rules
-    
-    const action = props.action
-    
-    const handleClose = (formEl: FormInstance | undefined) => {
-        ctx.emit('handleClose')
-        resetForm(formEl)
-    }
-    
-    const handleSubmit = async (formEl: FormInstance | undefined) => {
-        if (!formEl) return
-        await formEl.validate((valid, fields) => {
-            if (valid) {
-                ctx.emit('handleSubmit', formData)
-            } else {
-                console.log('error submit!', fields)
-            }
-        })
-    }
-    
-    const resetForm = (formEl: FormInstance | undefined) => {
-        if (!formEl) return 
-        formEl.resetFields()
-    }
-    
-    return {
-        formData,
-        dialogFormRef,
-        rules,
-        action,
-        handleClose,
-        handleSubmit, 
-        resetForm
-    }
+type role = {
+    _id: number,
+    roleName: string
+}
+
+interface list { 
+   [index:number]:role 
 }
 
 export default defineComponent({
-    name: 'addUser',
+    name: 'Create',
     emits: ['handleSubmit','handleClose'],
     props: {
         drawerDialog: {
@@ -152,18 +117,93 @@ export default defineComponent({
                 return false
             }
         },
-        title: String,
-        action: String,
-        rules: Object,
-        formData: Object,
-        roleList: Array,
-        deptList: Array
+        title: {
+            type: String,
+            default: () => {
+                return ''
+            }
+        },
+        action: {
+            type: String,
+            default: () => {
+                return ''
+            }
+        },
+        rules: {
+            type: Object,
+            default: () => {
+                return {}
+            }
+        },
+        formData: {
+            type: Object,
+            default: () => {
+                return {}
+            }
+        },
+        roleList: {
+            type: Array as PropType<list>,
+            default: () => {
+                return []
+            }
+        },
+        deptList: {
+            type: Array,
+            default: () => {
+                return []
+            }
+        }
     },
     components: {
-        Drawer: defineAsyncComponent(() => import('@C/components/Drawer.vue'))
+        Drawer: defineAsyncComponent(() => import('@Admin/components/Drawer.vue'))
     },
     setup(props, ctx) {
-        return { ...useDrawerDialogEffect(props, ctx) }
+        const dialogFormRef = ref<FormInstance>()
+
+        const {
+            drawerDialog,
+            title,
+            action,
+            rules,
+            formData,
+            roleList,
+            deptList
+        } = toRefs(props)
+    
+        const handleClose = (formEl: FormInstance | undefined) => {
+            ctx.emit('handleClose')
+            resetForm(formEl)
+        }
+    
+        const handleSubmit = async (formEl: FormInstance | undefined) => {
+            if (!formEl) return
+            await formEl.validate((valid, fields) => {
+                if (valid) {
+                    ctx.emit('handleSubmit', props.formData)
+                } else {
+                    console.log('error submit!', fields)
+                }
+            })
+        }
+    
+        const resetForm = (formEl: FormInstance | undefined) => {
+            if (!formEl) return 
+            formEl.resetFields()
+        }
+    
+        return {
+            drawerDialog,
+            title,
+            action,
+            rules,
+            formData,
+            roleList,
+            deptList,
+            dialogFormRef,
+            handleClose,
+            handleSubmit, 
+            resetForm
+        }
     },
 })
 </script>

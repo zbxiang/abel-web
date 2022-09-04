@@ -32,39 +32,6 @@
 <script lang="ts">
 import { defineComponent, defineAsyncComponent, ref } from 'vue'
 
-const usePermissionEffect = (props?: any, ctx?: any) => {
-    const tree = ref()
-
-    const handleClose = () => {
-        ctx.emit('handleClose')
-    }
-
-    const handleSubmit = () => {
-        ctx.emit('handleSubmit')
-    }
-
-    const getCheckedNodes = () => {
-        return tree.value.getCheckedNodes()
-    }
-
-    const getHalfCheckedKeys = () => {
-        return tree.value.getHalfCheckedKeys()
-    }
-
-    const setCheckedKeys = (data?: any) => {
-        tree.value.setCheckedKeys(data)
-    }
-    
-    return {
-        tree,
-        handleClose,
-        handleSubmit,
-        getCheckedNodes,
-        getHalfCheckedKeys,
-        setCheckedKeys
-    }
-}
-
 export default defineComponent({
     name: 'Permission',
     emits: [
@@ -85,10 +52,39 @@ export default defineComponent({
 
     },
     components: {
-        Drawer: defineAsyncComponent(() => import('@C/components/Drawer.vue'))
+        Drawer: defineAsyncComponent(() => import('@Admin/components/Drawer.vue'))
     },
     setup(props, ctx) {
-        return { ...usePermissionEffect(props, ctx) }
+        const tree = ref()
+
+        const handleClose = () => {
+            ctx.emit('handleClose')
+        }
+
+        const handleSubmit = () => {
+            ctx.emit('handleSubmit')
+        }
+
+        const getCheckedNodes = () => {
+            return tree.value.getCheckedNodes()
+        }
+
+        const getHalfCheckedKeys = () => {
+            return tree.value.getHalfCheckedKeys()
+        }
+
+        const setCheckedKeys = (data?: any) => {
+            tree.value.setCheckedKeys(data)
+        }
+    
+        return {
+            tree,
+            handleClose,
+            handleSubmit,
+            getCheckedNodes,
+            getHalfCheckedKeys,
+            setCheckedKeys
+        }
     }
 })
 </script>

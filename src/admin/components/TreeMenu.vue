@@ -29,20 +29,11 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 
-interface menu {
-    _id: number
-    menuType: number
-    url: string
-    icon: string
-    menuName: string
-    children: menu[]
-}
-
 export default defineComponent({
     name: 'treeMenu',
     props: {
         userMenu: {
-            type: Array as PropType<menu[]>,
+            type: Array as PropType<any[]>,
             default: () => {
                 return []
             }

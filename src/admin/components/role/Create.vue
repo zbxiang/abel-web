@@ -34,39 +34,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent, ref } from 'vue'
+import { defineComponent, defineAsyncComponent, ref, PropType } from 'vue'
 import type { FormInstance } from 'element-plus'
 
-/**
- * 处理新增角色逻辑
- */
-const useDrawerDialogEffect = (props?: any, ctx?: any) => {
-    const dialogFormRef = ref<FormInstance>()
-    const roleForm = props.roleForm
-    const rules = props.rules
-    const handleClose = (formEl: FormInstance | undefined) => {
-        ctx.emit('handleClose', formEl)
-    }
-    const handleSubmit = async (formEl: FormInstance | undefined) => {
-        if (!formEl) return
-        await formEl.validate((valid, fields) => {
-            if (valid) {
-                let params = {...roleForm}
-                ctx.emit('handleSubmit', params, formEl)
-            } else {
-                console.log('error submit!', fields)
-            }
-        })
-    }
-    const _resetForm = (formEl: FormInstance | undefined) => {
-        if (!formEl) return 
-        formEl.resetFields()
-    }
-    return { roleForm, dialogFormRef, rules, handleClose, handleSubmit, _resetForm}
+type role = {
+    roleName: string,
+    remark: string
 }
 
 export default defineComponent({
-    name: 'Establish',
+    name: 'Create',
     emits: ['handleSubmit','handleClose'],
     props: {
         drawerDialog: {
@@ -77,14 +54,53 @@ export default defineComponent({
         },
         title: String,
         rules: Object,
-        roleForm: Object
+        roleForm: {
+            type: Object as PropType<role>,
+            default: () => {
+                return []
+            }
+        }
     },
     components: {
-        Drawer: defineAsyncComponent(() => import('@C/components/Drawer.vue'))
+        Drawer: defineAsyncComponent(() => import('@Admin/components/Drawer.vue'))
     },
     setup(props, ctx) {
-        return { ...useDrawerDialogEffect(props, ctx) }
-    },
+        const dialogFormRef = ref<FormInstance>()
+        
+        const roleForm = props.roleForm
+        
+        const rules = props.rules
+        
+        const handleClose = (formEl: FormInstance | undefined) => {
+            ctx.emit('handleClose', formEl)
+            resetForm(formEl)
+        }
+
+        const handleSubmit = async (formEl: FormInstance | undefined) => {
+            if (!formEl) return
+            await formEl.validate((valid, fields) => {
+                if (valid) {
+                    let params = {...roleForm}
+                    ctx.emit('handleSubmit', params, formEl)
+                } else {
+                    console.log('error submit!', fields)
+                }
+            })
+        }
+
+        const resetForm = (formEl: FormInstance | undefined) => {
+            if (!formEl) return 
+            formEl.resetFields()
+        }
+
+        return { 
+            roleForm, 
+            dialogFormRef, 
+            rules, 
+            handleClose, 
+            handleSubmit
+        }
+    }
 })
 </script>
 

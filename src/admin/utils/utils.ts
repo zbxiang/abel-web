@@ -31,7 +31,7 @@
                 if (item.action) {
                     routes.push({
                         name: item.component,
-                        url: item.url,
+                        path: item.url,
                         meta: {
                             title: item.menuName
                         },

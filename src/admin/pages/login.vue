@@ -23,9 +23,6 @@ import { defineComponent, reactive, ref, getCurrentInstance } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import $storage from '../utils/storage'
-import utils from '../utils/utils'
-const modules = import.meta.glob('./../pages/*/*.vue')
 
 export default defineComponent({
     name: 'Login',
@@ -58,30 +55,12 @@ export default defineComponent({
                     const res = await $api.login(formData)
                     if (res.code == 200) {
                         store.commit("saveUserInfo", res.data)
-                        await loadAsyncRoutes()
                         router.push('/welcome')
                     }
                 } else {
                     return false
                 }
             })
-        }
-
-        /**
-         * 动态加载路由
-         */
-        const loadAsyncRoutes = async () => {
-            let userInfo = $storage.getItem('userInfo') || {}
-            if (userInfo.token) {
-                try {
-                    const { menuList } = await $api.getPermissionList()
-                    let routes = utils.generateRoute(menuList)
-                    routes.map((route) => {
-                        modules[`./../pages/${route.component}.vue`]
-                        router.addRoute('home', route)
-                    })
-                } catch (error) {}
-            }
         }
 
         return {

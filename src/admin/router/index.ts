@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import $storage from './../utils/storage'
 import $api from './../api'
 import utils from './../utils/utils'
-const modules = import.meta.glob('./../pages/*/*.vue')
+const modules = import.meta.glob('./../pages/**/**.vue')
 
 const routes = [
     {
@@ -21,6 +21,30 @@ const routes = [
                     title: '欢迎来到Zbxiang后台管理系统'
                 },
                 component: () => import('@Admin/pages/Welcome.vue')
+            },
+            {
+                name: 'user',
+                path: '/user',
+                meta: {
+                    title: '用户管理'
+                },
+                component: () => import('@Admin/pages/User.vue')
+            },
+            {
+                name: 'menu',
+                path: '/menu',
+                meta: {
+                    title: '菜单管理'
+                },
+                component: () => import('@Admin/pages/Menu.vue')
+            },
+            {
+                name: 'role',
+                path: '/role',
+                meta: {
+                    title: '角色管理'
+                },
+                component: () => import('@Admin/pages/Role.vue')
             }
         ]
     },
@@ -31,6 +55,14 @@ const routes = [
             title: '登录'
         },
         component: () => import('@Admin/pages/Login.vue')
+    },
+    {
+        name: '404',
+        path: '/404',
+        meta: {
+            title: '页面不存在'
+        },
+        component: () => import('@Admin/pages/404.vue')
     }
 ]
 
@@ -49,7 +81,7 @@ async function loadAsyncRoutes() {
                 let routes = utils.generateRoute(menuList)
                 routes.map(route => {
                     route.component = modules[`./../pages/${route.component}.vue`]
-                    router.addRoute("home", route);
+                    router.addRoute("home", route)
                 })
             }
         } catch (error) {
