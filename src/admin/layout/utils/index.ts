@@ -41,7 +41,7 @@ export function toggleThemeClass(element: HTMLElement, className: string) {
 //   import path from 'path'
 import { RouteRecordRaw } from 'vue-router'
   
-  export function mapTwoLevelRouter(srcRoutes: Array<RouteRecordRaw>) {
+export function mapTwoLevelRouter(srcRoutes: Array<RouteRecordRaw>) {
     function addParentRoute(routes: Array<RouteRecordRaw>, parent: Array<RouteRecordRaw>, parentPath: string) {
       routes.forEach((it) => {
         // if (!isExternal(it.path)) {
@@ -67,5 +67,5 @@ import { RouteRecordRaw } from 'vue-router'
       return tempRoutes
     }
     return []
-  }
+}
   

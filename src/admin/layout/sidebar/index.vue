@@ -4,7 +4,7 @@
         :class="[!state.isCollapse ? 'open-status' : 'close-status']"
     >
         <transition name="logo">
-            <Logo v-if="showLogo" />
+          <Logo v-if="showLogo" />
         </transition>
         <ScrollerMenu>
             <template #default>
@@ -34,7 +34,9 @@ export default defineComponent({
     setup() {
         const state = store.state
         const routes = computed(() => {
-            return state.permissionRoutes.filter((it) => !!it.name);
+          console.log('sdgksdjgkjsdjgsd')
+          console.log(state.permissionRoutes)
+          return state.permissionRoutes.filter((it) => !!it.name);
         })
         return {
             state,

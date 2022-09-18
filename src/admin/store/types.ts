@@ -1,9 +1,12 @@
 export interface UserState {
     userId: number
-    token: string
-    roleId: number
-    roles: string[] | null
     userName: string
+    deptId: string[] | null
+    roleList: string[] | null
+    role: number
+    token: string
+    userEmail: string
+    state: number
     nickName: string
     avatar: string
 }

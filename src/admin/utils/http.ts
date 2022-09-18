@@ -2,13 +2,21 @@
  * axios二次封装
  */
 import axios from 'axios'
+import qs from 'qs'
 import config from '../config'
 import { ElMessage } from 'element-plus'
 import router from '../router'
-import storage from './storage'
+import pinia from '../store/pinia'
+import useUserStore from '../store/modules/user'
+const userStore = useUserStore(pinia)
 
 const TOKEN_INVALID: string = 'Token认证失败，请重新登录'
 const NETWORK_ERROR: string = '网络请求异常，请稍后重试'
+
+export const CONTENT_TYPE = 'Content-Type'
+export const FORM_URLENCODED = 'application/x-www-form-urlencoded; charset=UTF-8'
+export const APPLICATION_JSON = 'application/json; charset=UTF-8'
+export const TEXT_PLAIN = 'text/plain; charset=UTF-8'
 
 type Method =
   | 'get'
@@ -42,10 +50,19 @@ const service = axios.create({
 
 // 请求拦截
 service.interceptors.request.use((req) => {
-    const headers = req.headers;
-    const { token = "" } = storage.getItem('userInfo') || {};
-    if (!headers.Authorization) headers.Authorization = 'Bearer ' + token;
-    return req;
+    !req.headers && (req.headers = {})
+    req.headers['Zbxiang-Admin-Version'] = 'v1.1.0'
+    const headers = req.headers || {}
+    if (!req.headers[CONTENT_TYPE]) {
+        req.headers[CONTENT_TYPE] = APPLICATION_JSON
+    }
+    if (req.headers[CONTENT_TYPE] === FORM_URLENCODED) {
+        req.data = qs.stringify(req.data)
+    }
+    // const { token = "" } = storage.getItem(USER_INFO_KEY) || {}
+    const token = userStore.getToken
+    if (!headers.Authorization) headers.Authorization = 'Bearer ' + token
+    return req
 })
 
 // 响应拦截

@@ -28,6 +28,14 @@ export default {
             mock: false
         })
     },
+    getMenuListByRoleId(params?: any) {
+        return http({
+            url: '/users/getMenuListByRoleId',
+            method: 'get',
+            data: params,
+            mock: false
+        })
+    },
     getRoleAllList() {
         return http({
             url: '/roles/allList',

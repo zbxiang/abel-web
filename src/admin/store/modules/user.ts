@@ -1,9 +1,9 @@
 import LayoutStore from '../../layout'
 import Cookies from 'js-cookie'
-
 import Avatar from '../../assets/img_avatar.gif'
 import { defineStore } from 'pinia'
 import { UserState } from '../types'
+import storage from '../../utils/storage'
 
 import {
     ROLE_ID_KEY,
@@ -15,17 +15,20 @@ import {
 const defaultAvatar = Avatar
 
 const userInfo: UserState = JSON.parse(
-    localStorage.getItem(USER_INFO_KEY) || '{}'
+    storage.getItem(USER_INFO_KEY) || '{}'
 )
 
 const useUserStore = defineStore('user', {
     state: () => {
         return {
             userId: userInfo.userId || 0,
-            roleId: userInfo.roleId || 0,
-            roles: userInfo.roles || null,
-            token: userInfo.token || '',
             userName: userInfo.userName || '',
+            deptId: userInfo.deptId || null,
+            roleList: userInfo.roleList || null,
+            role: userInfo.role || 0,
+            token: userInfo.token || '',
+            userEmail: userInfo.userEmail || '',
+            state: userInfo.state || 0,
             nickName: userInfo.nickName || '',
             avatar: userInfo.avatar || defaultAvatar
         }
@@ -34,23 +37,27 @@ const useUserStore = defineStore('user', {
         getUserId(): number {
             return this.userId
         },
-        getRroleId(): number {
-            return this.roleId
+        getRoleId(): number {
+            return this.role
         },
+        getToken(): string {
+            return this.token
+        }
     },
     actions: {
         saveUser(userInfo: UserState) {
             return new Promise<void>((res) => {
                 this.userId = userInfo.userId
-                this.userId = userInfo.userId
-                this.token = userInfo.token
-                this.roleId = userInfo.roleId
-                this.roles = userInfo.roles
                 this.userName = userInfo.userName
+                this.deptId = userInfo.deptId
+                this.roleList = userInfo.roleList
+                this.role = userInfo.role
+                this.token = userInfo.token
+                this.userEmail = userInfo.userEmail
                 this.nickName = userInfo.nickName
                 this.avatar = userInfo.avatar || defaultAvatar
                 Cookies.set(USER_TOKEN_KEY, userInfo.token)
-                localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo))
+                storage.setItem(USER_INFO_KEY, JSON.stringify(userInfo))
                 res()
             });
         },
@@ -60,14 +67,16 @@ const useUserStore = defineStore('user', {
         logout() {
             return new Promise<void>((res) => {
                 this.userId = 0
-                this.avatar = ""
-                this.roleId = 0
-                this.roles = []
-                this.userName = ""
-                this.nickName = ""
-                this.token = ""
+                this.userName = ''
+                this.roleList = []
+                this.role = 0
+                this.token = ''
+                this.userEmail = ''
+                this.state = 0
+                this.nickName = ''
+                this.avatar = ''
                 Cookies.remove(USER_TOKEN_KEY)
-                localStorage.clear()
+                storage.clearAll()
                 LayoutStore.reset()
                 res()
             })

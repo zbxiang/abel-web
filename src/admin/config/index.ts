@@ -26,6 +26,6 @@
  export default {
     env,
     mock: false,
-    namespace: 'manager',
+    namespace: 'abel_admin',
     ...EnvConfig[env]
  }
