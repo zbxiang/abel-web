@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import $storage from './../utils/storage'
 import $api from './../api'
-import utils from './../utils/utils'
+import utils from '../utils'
 const modules = import.meta.glob('./../pages/**/**.vue')
 
 const routes = [
@@ -11,7 +11,7 @@ const routes = [
         meta: {
             title: '首页'
         },
-        component: () => import('@Admin/components/layout.vue'),
+        component: () => import('@Admin/layout/index.vue'),
         redirect: '/welcome',
         children: [
             {

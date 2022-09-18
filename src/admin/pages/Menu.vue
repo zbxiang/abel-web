@@ -230,7 +230,7 @@ export default defineComponent({
         const handleDelete = (_id: number) => {}
 
         // 提交
-        const handleSubmit = async (options: any, formEl: FormInstance | undefined) => {
+        const handleSubmit = async (options: any ) => {
             try {
                 let res
                 let params = toRaw(options)

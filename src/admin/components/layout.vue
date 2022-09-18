@@ -100,9 +100,9 @@ export default defineComponent({
             try {
                 const count = await $api.noticeCount()
                 store.commit('saveNoticeCount', count)
-            } catch (error: any) {
-                console.log(error)
-            } 
+            } catch (e: any) {
+              throw new Error(e)
+            }
         }
 
         const getMenuList = async () => {
