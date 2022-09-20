@@ -171,6 +171,14 @@ export const asyncRoutes = [
                 meta: {
                     title: '菜单管理',
                 }
+            },
+            {
+                path: 'user',
+                name: 'User',
+                component: (): any => import('@Admin/pages/system/user.vue'),
+                meta: {
+                    title: '用户管理',
+                }
             }
         ]
     }

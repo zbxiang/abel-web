@@ -11,6 +11,7 @@ import api from './api'
 import storage from './utils/storage'
 import LayoutStore from "./layout"
 import pinia from './store/pinia'
+import { registerComponents } from './components'
 import mitt from 'mitt'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 const emitter = mitt();
@@ -36,6 +37,8 @@ app.directive('has', {
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
+
+registerComponents(app)
 
 app.use(LayoutStore, {
     state: {
