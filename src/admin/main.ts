@@ -2,37 +2,27 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import './utils/router'
-import store from './store'
+// import store from './store'
 import ElementPlus from 'element-plus'
-import 'element-plus/theme-chalk/index.css'
+import 'element-plus/dist/index.css'
+import 'dayjs/locale/zh-cn'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import '@Admin/assets/icons/iconfont/iconfont.css'
+import '@Admin/assets/icons/iconfont/iconfont.js'
+import '@Admin/assets/styles/main.css'
+import LayoutStore from "./layout"
 import http from './utils/http'
+import { registerComponents } from './components'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import pinia from './store/pinia'
 import api from './api'
 import storage from './utils/storage'
-import LayoutStore from "./layout"
-import pinia from './store/pinia'
-import { registerComponents } from './components'
-import mitt from 'mitt'
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-const emitter = mitt();
+
+import './setting'
 
 // console.log("环境变量=>", import.meta.env)
 
 const app = createApp(App)
-
-app.directive('has', {
-    beforeMount: function (el, binding) {
-        let actionList = storage.getItem('actionList')
-        let value = binding.value
-        let hasPermission = actionList.includes(value)
-        if (!hasPermission) {
-            el.style = 'display:none'
-            setTimeout(() => {
-                el.parentNode.removeChild(el)
-            }, 0)
-        }
-    }
-})
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
@@ -59,8 +49,7 @@ app.use(LayoutStore, {
 app.config.globalProperties.$http = http
 app.config.globalProperties.$api = api
 app.config.globalProperties.$storage = storage
-app.config.globalProperties.$emitter = emitter
-app.use(router).use(store).use(pinia).use(ElementPlus, { size: 'small', locale: zhCn, }).mount('#app')
+app.use(router).use(pinia).use(ElementPlus, { size: 'small', locale: zhCn, }).mount('#app')
 // app.use(router).use(store).mount('#app')
 
 

@@ -12,13 +12,7 @@ export interface IDataTable<T = any> {
         height: number
     }
     tableLoading: Ref<boolean>
-    handleSuccess: ({
-        data,
-        totalSize
-    }: {
-        data: T[]
-        totalSize?: number
-    }) => Promise<{ data: T[] }>
+    handleSuccess: (data: T) => Promise<{ data: T }>
     handleSelectionChange: (tempSelectRows: T[]) => void
     [key: string]: any
 }
@@ -37,16 +31,10 @@ export default function <T = any>(): IDataTable<T> {
         height: 200
     })
     const tableLoading = ref(true)
-    const handleSuccess = ({
-        data = [],
-        totalSize = 10
-    }: {
-        data: T[]
-        totalSize?: number
-    }) => {
-        dataList.value = data
+    const handleSuccess = (data: any) => {
+        dataList.value = data.lists
         tableLoading.value = false
-        return Promise.resolve({ data, totalSize })
+        return Promise.resolve( data )
     };
     const handleSelectionChange = (tempSelectRows: T[]) => {
         selectRows.value = tempSelectRows
