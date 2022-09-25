@@ -1,4 +1,5 @@
 import { TinyEmitter } from 'tiny-emitter'
+// import './styles/main.css'
 import store from './store'
 import { inject, App } from 'vue'
 import { LocalLayoutStore } from './types'
@@ -20,7 +21,7 @@ function getComponentName(key: string) {
 // 注册全局Icon
 export function registerIcons(app: App) {
     Object.keys(ElIcons).forEach((it: string) => {
-        app.component(it + "Icon", (ElIcons as any)[it])
+        app.component(it + 'Icon', (ElIcons as any)[it])
     })
 }
 
@@ -40,7 +41,7 @@ export function registerComponents(app: App) {
 }
 
 function install(Vue: App, options: any) {
-    registerComponents(Vue)
+    registerIcons(Vue)
     registerComponents(Vue)
     delete options.registerElement
     store.start(options)
@@ -48,8 +49,8 @@ function install(Vue: App, options: any) {
         /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
     )
     Vue.config.globalProperties.$isAndroid =
-    navigator.userAgent.indexOf("Android") > -1 ||
-    navigator.userAgent.indexOf("Adr") > -1
+    navigator.userAgent.indexOf('Android') > -1 ||
+    navigator.userAgent.indexOf('Adr') > -1
     Vue.provide(key, store)
     Vue.provide(emitKey, new TinyEmitter())
 }
