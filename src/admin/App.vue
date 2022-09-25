@@ -9,7 +9,7 @@ import { defineComponent } from '@vue/runtime-core'
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
 
 export default defineComponent({
-  name: "App",
+  name: 'App',
   setup() {
     return {
       zhCn
@@ -19,6 +19,4 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import './assets/font/iconfont.scss';
-@import './assets/style/_style.scss';
 </style>

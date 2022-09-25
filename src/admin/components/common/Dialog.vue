@@ -136,7 +136,7 @@ export default defineComponent({
     word-break: break-all;
     .base-form-container {
         .el-input--large .el-input__inner {
-            --el-input-inner-height: calc(var(--el-input-height, 32px) - 2px);
+            height: 32px;
         }
     }
 }
