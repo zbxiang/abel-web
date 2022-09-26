@@ -134,10 +134,10 @@ export default defineComponent({
     color: #606266;
     font-size: 14px;
     word-break: break-all;
-    .base-form-container {
-        .el-input--large .el-input__inner {
-            height: 32px;
-        }
-    }
+    // .base-form-container {
+    //     .el-input--large .el-input__inner {
+    //         height: 32px;
+    //     }
+    // }
 }
 </style>

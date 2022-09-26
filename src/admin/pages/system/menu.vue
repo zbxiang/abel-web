@@ -42,17 +42,17 @@
                     <el-table-column
                         align="center"
                         label="菜单名称"
-                        prop="menuName"
+                        prop="name"
                     />
                     <el-table-column
                         align="center"
                         label="菜单地址"
-                        prop="menuUrl"
+                        prop="path"
                     />
                     <el-table-column
                         align="center"
                         label="图标"
-                        prop="menuUrl"
+                        prop="icon"
                     >
                         <template #default="scope">
                             <el-icon
@@ -96,12 +96,12 @@
                         <template #default="scope">
                             <div class="menu-badge__wrapper">
                                 <el-badge
-                                :value="
-                                    parseInt(scope.row.tip)
-                                    ? parseInt(scope.row.tip)
-                                    : scope.row.tip
-                                "
-                                :is-dot="scope.row.tip === 'dot'"
+                                    :value="
+                                        parseInt(scope.row.tip)
+                                        ? parseInt(scope.row.tip)
+                                        : scope.row.tip
+                                    "
+                                    :is-dot="scope.row.tip === 'dot'"
                                 >
                                 </el-badge>
                             </div>
@@ -141,12 +141,12 @@
                 >
                     <el-form-item label="上级菜单">
                         <TreeSelector
-                            v-model:value="menuModel.parentPath"
+                            v-model:value="menuModel.parentIds"
                             placeholder="请选择上级菜单"
                             :data="dataList"
                             :dataFields="{
-                                label: 'menuName',
-                                value: 'menuUrl',
+                                label: 'name',
+                                value: 'path',
                                 children: 'children',
                             }"
                         />
@@ -179,7 +179,7 @@
                     </el-form-item>
                     <el-form-item label="badge提示">
                         <el-radio-group
-                            v-model="menuModel.badge"
+                            v-model="menuModel.tip"
                             size="small"
                         >
                             <el-radio-button label="">无</el-radio-button>
@@ -222,7 +222,8 @@ import {
     ref,
     shallowReactive,
     defineComponent,
-    getCurrentInstance
+    getCurrentInstance,
+    toRaw
 } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useDataTable } from '@/admin/hooks'
@@ -235,11 +236,11 @@ export default defineComponent({
         const $api = getCurrentInstance()?.appContext.config.globalProperties.$api
         const menuModel = reactive<MenuModel>({
             id: uuid(),
-            parentPath: '',
+            parentIds: [null],
             path: '',
             menuName: '',
             outLink: '',
-            badge: '',
+            tip: '',
             badgeNum: 1,
             cacheable: false,
             hidden: false,
@@ -266,17 +267,29 @@ export default defineComponent({
         }
         const onAddItem = () => {
             menuModel.id = uuid()
-            menuModel.parentPath = ''
+            menuModel.parentIds = [null]
             menuModel.path = ''
-            menuModel.menuName = ''
+            menuModel.name = ''
             menuModel.outLink = ''
-            menuModel.badge = ''
+            menuModel.tip = ''
             menuModel.badgeNum = 1
             menuModel.cacheable = false
             menuModel.hidden = false
             menuModel.icon = ''
             menuModel.affix = false
-            dialogRef.value?.show(() => {})
+            dialogRef.value?.show(() => {
+                $api.menuAdd(toRaw(menuModel))
+                    .then((res: any) => {
+                        ElMessage({
+                            message: res.msg,
+                            type: 'success'
+                        })
+                        dialogRef.value?.close()
+                    })
+                    .catch((error: any) => {
+                        console.log(error)
+                    })
+            })
         }
         const onUpdateItem = (item: any) => {}
         const onDeleteItem = (item: any) => {}
