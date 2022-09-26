@@ -2,7 +2,8 @@
  * api管理
  */
 
-import http from "../utils/http";
+import http from '../utils/http'
+import system from './system'
 
 export default {
     login(params?: any) {
@@ -92,14 +93,6 @@ export default {
             mock: false
         })
     },
-    getMenuList(params?: any) {
-        return http({
-            url: '/menu/List',
-            method: 'get',
-            data: params,
-            mock: false
-        })
-    },
     addMenu(params?: any) {
         return http({
             url: '/menu/add',
@@ -171,5 +164,7 @@ export default {
             data: params,
             mock: false
         })
-    }
+    },
+    // 系统管理
+    ...system
 }

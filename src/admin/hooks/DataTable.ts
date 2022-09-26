@@ -32,7 +32,7 @@ export default function <T = any>(): IDataTable<T> {
     })
     const tableLoading = ref(true)
     const handleSuccess = (data: any) => {
-        dataList.value = data.lists
+        dataList.value = data
         tableLoading.value = false
         return Promise.resolve( data )
     };
