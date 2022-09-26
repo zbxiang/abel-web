@@ -265,9 +265,20 @@ export default defineComponent({
                 })
         }
         const onAddItem = () => {
-            console.log('sdkgdskjgjdskgjsdkjksjdZbxiang')
-            console.log(dialogRef)
-            dialogRef.value?.show(() => {})
+            menuModel.id = uuid()
+            menuModel.parentPath = ''
+            menuModel.path = ''
+            menuModel.name = ''
+            menuModel.outLink = ''
+            menuModel.badge = ''
+            menuModel.badgeNum = 1
+            menuModel.cacheable = false
+            menuModel.hidden = false
+            menuModel.icon = ''
+            menuModel.affix = false
+            dialogRef.value?.show(() => {
+                ElMessageBox.confirm('模拟数据添加成功，参数为：\n' + JSON.stringify(menuModel))
+            })
         }
         const onUpdateItem = (item: any) => {}
         const onDeleteItem = (item: any) => {}
