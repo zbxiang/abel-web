@@ -237,7 +237,7 @@ export default defineComponent({
             id: uuid(),
             parentPath: '',
             path: '',
-            name: '',
+            menuName: '',
             outLink: '',
             badge: '',
             badgeNum: 1,
@@ -265,8 +265,17 @@ export default defineComponent({
                 })
         }
         const onAddItem = () => {
-            console.log('sdkgdskjgjdskgjsdkjksjdZbxiang')
-            console.log(dialogRef)
+            menuModel.id = uuid()
+            menuModel.parentPath = ''
+            menuModel.path = ''
+            menuModel.menuName = ''
+            menuModel.outLink = ''
+            menuModel.badge = ''
+            menuModel.badgeNum = 1
+            menuModel.cacheable = false
+            menuModel.hidden = false
+            menuModel.icon = ''
+            menuModel.affix = false
             dialogRef.value?.show(() => {})
         }
         const onUpdateItem = (item: any) => {}
