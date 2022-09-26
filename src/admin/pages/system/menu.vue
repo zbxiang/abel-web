@@ -146,7 +146,7 @@
                             :data="dataList"
                             :dataFields="{
                                 label: 'name',
-                                value: 'path',
+                                value: 'id',
                                 children: 'children',
                             }"
                         />

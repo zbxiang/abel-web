@@ -12,6 +12,7 @@
                         <span>不选, 则直接创建一级菜单</span>
                     </el-cascader>
                 </el-form-item>
+                
                 <el-form-item label="菜单类型" prop="menuType">
                     <el-radio-group v-model="formData.menuType">
                         <el-radio :label="1">菜单</el-radio>
