@@ -140,8 +140,8 @@
                     label-position="right"
                 >
                     <el-form-item label="上级菜单">
-                        <TreeSelector
-                            v-model:value="menuModel.parentIds"
+                        <CascaderSelector
+                            :model="menuModel.parentIds"
                             placeholder="请选择上级菜单"
                             :data="dataList"
                             :dataFields="{

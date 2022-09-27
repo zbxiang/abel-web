@@ -113,8 +113,6 @@ function transformData(data: Array<any>) {
 }
 function onNodeClick(key: any, item: any) {
     visible.value = false
-    console.log('sgksdjgkjsdjgsd')
-    console.log(key, item)
     emitter('update:value', key.value)
 }
 function onFocus() {
