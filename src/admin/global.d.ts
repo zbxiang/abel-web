@@ -8,11 +8,11 @@ declare interface RoleModel {
 
 declare interface MenuModel {
     id: string;
-    parentPath: string;
+    parentIds: array[];
     path: string;
     name: string;
     outLink?: string;
-    badge?: string | number;
+    tip?: string | number;
     badgeNum?: number;
     cacheable?: boolean;
     hidden?: boolean;

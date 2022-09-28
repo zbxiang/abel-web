@@ -1,5 +1,13 @@
 <template>
-    <el-cascader v-model="selectValue" :options="options" clearable :placeholder="placeholder" filterable />
+    <el-cascader
+        style="width: 100%;"
+        v-model="selectValue" 
+        :options="options"
+        clearable 
+        :placeholder="placeholder" 
+        filterable
+        :props="{ checkStrictly: true }"
+    />
 </template>
 
 <script lang="ts" setup>

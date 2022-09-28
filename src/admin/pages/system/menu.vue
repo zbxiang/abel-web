@@ -26,7 +26,7 @@
                     :size="tableConfig.size"
                     :stripe="tableConfig.stripe"
                     :border="tableConfig.border"
-                    row-key="menuUrl"
+                    row-key="path"
                     :tree-props="{ children: 'children' }"
                 >
                     <el-table-column
@@ -141,7 +141,7 @@
                 >
                     <el-form-item label="上级菜单">
                         <CascaderSelector
-                            :model="menuModel.parentIds"
+                            v-model:value="menuModel.parentIds"
                             placeholder="请选择上级菜单"
                             :data="dataList"
                             :dataFields="{
@@ -238,7 +238,7 @@ export default defineComponent({
             id: uuid(),
             parentIds: [null],
             path: '',
-            menuName: '',
+            name: '',
             outLink: '',
             tip: '',
             badgeNum: 1,
@@ -285,13 +285,53 @@ export default defineComponent({
                             type: 'success'
                         })
                         dialogRef.value?.close()
+                        doRefresh()
                     })
                     .catch((error: any) => {
                         console.log(error)
                     })
             })
         }
-        const onUpdateItem = (item: any) => {}
+        const onUpdateItem = (item: any) => {
+            const {
+                id,
+                parentIds,
+                path,
+                name,
+                outLink,
+                tip,
+                badgeNum,
+                cacheable,
+                hidden,
+                icon,
+                affix
+            } = toRaw(item)
+            menuModel.id = id
+            menuModel.parentIds = parentIds
+            menuModel.path = path
+            menuModel.name = name
+            menuModel.outLink = outLink
+            menuModel.tip = tip
+            menuModel.badgeNum = badgeNum
+            menuModel.cacheable = cacheable
+            menuModel.hidden = hidden
+            menuModel.icon = icon
+            menuModel.affix = affix
+            dialogRef.value?.show(() => {
+                $api.menuUpdate(toRaw(menuModel))
+                    .then((res: any) => {
+                        ElMessage({
+                            message: res.msg,
+                            type: 'success'
+                        })
+                        dialogRef.value?.close()
+                        doRefresh()
+                    })
+                    .catch((error: any) => {
+                        console.log(error)
+                    })
+            })
+        }
         const onDeleteItem = (item: any) => {}
         onMounted(doRefresh)
         return {

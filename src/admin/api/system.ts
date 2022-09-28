@@ -20,4 +20,13 @@ export default {
             mock: false
         })
     },
+    // 编辑菜单
+    menuUpdate(params?: any) {
+        return http({
+            url: `${baseUrl}/update`,
+            method: 'post',
+            data: params,
+            mock: false
+        })
+    }
 }
