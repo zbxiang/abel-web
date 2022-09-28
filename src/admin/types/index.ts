@@ -38,7 +38,7 @@ interface TableSearchItem {
   span?: number;
 }
 
-interface FormItem extends TableSearchItem {
+export interface FormItem extends TableSearchItem {
   validator?: (value: FormItem, associationItem?: FormItem) => boolean;
   hidden?: boolean;
   inputType?: string;

@@ -1,6 +1,8 @@
 import { ElInput } from 'element-plus'
 import { Ref, VNode } from 'vue'
-
+import {
+    FormItem
+} from '@/admin/types'
 type RenderProps = {
     render: (formItem: FormItem) => VNode
     formItem: FormItem

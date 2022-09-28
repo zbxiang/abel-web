@@ -294,7 +294,7 @@ export default defineComponent({
         const doRefresh = () => {
             $api.getUserList(tableFooter.value?.withPageInfoData())
                 .then((res: any) => {
-                    return handleSuccess(res.data)
+                    return handleSuccess(res.data.lists)
                 })
                 .then((res: any) => {
                     tableFooter.value?.setTotalSize(res.totalSize)

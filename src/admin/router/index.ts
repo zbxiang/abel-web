@@ -179,6 +179,22 @@ export const asyncRoutes = [
                 meta: {
                     title: '用户管理',
                 }
+            },
+            {
+                path: 'dept',
+                name: 'Dept',
+                component: (): any => import('@Admin/pages/system/department.vue'),
+                meta: {
+                    title: '部门管理',
+                }
+            },
+            {
+                path: 'role',
+                name: 'Role',
+                component: (): any => import('@Admin/pages/system/Role.vue'),
+                meta: {
+                    title: '角色管理',
+                }
             }
         ]
     }

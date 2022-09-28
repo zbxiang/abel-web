@@ -19,7 +19,7 @@ export interface UserModelType {
 /**
  * 角色列表对象模型
  */
-interface RoleModelType {
+export interface RoleModelType {
   id: number;
   name: string;
   roleCode: string;
@@ -30,7 +30,7 @@ interface RoleModelType {
 /**
  * 部门列表对象模型
  */
-interface DepartmentModelType {
+export interface DepartmentModelType {
   id: number;
   parentId: number;
   name: string;
@@ -43,7 +43,7 @@ interface DepartmentModelType {
 /**
  * 菜单列表对象模型
  */
-interface MenuModelType {
+export interface MenuModelType {
   menuUrl: string;
   menuName: string;
   icon: string;
