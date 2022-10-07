@@ -3,7 +3,8 @@
  */
 
 import http from '../utils/http'
-import system from './system'
+import Menu from './menu'
+import Department from './department'
 
 export default {
     login(params?: any) {
@@ -165,6 +166,8 @@ export default {
             mock: false
         })
     },
-    // 系统管理
-    ...system
+    // 菜单管理
+    ...Menu,
+    // 部门管理
+    ...Department
 }

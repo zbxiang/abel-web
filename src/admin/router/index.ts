@@ -191,7 +191,7 @@ export const asyncRoutes = [
             {
                 path: 'role',
                 name: 'Role',
-                component: (): any => import('@Admin/pages/system/Role.vue'),
+                component: (): any => import('@Admin/pages/system/role.vue'),
                 meta: {
                     title: '角色管理',
                 }

@@ -32,9 +32,9 @@ export interface RoleModelType {
  */
 export interface DepartmentModelType {
   id: number;
-  parentId: number;
+  parentIds: any[];
   name: string;
-  depCode: string;
+  code: string;
   order: number;
   status: number;
   children: Array<DepartmentModelType>;
