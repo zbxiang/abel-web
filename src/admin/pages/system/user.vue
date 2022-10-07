@@ -61,7 +61,7 @@
                     />
                     <el-table-column align="center" label="头像">
                         <template #default="scope">
-                            <el-avatar>{{ scope.row.nickName.substring(0, 1) }}</el-avatar>
+                            <el-avatar>{{ scope.row.userName.substring(0, 1) }}</el-avatar>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="性别" prop="gender">
@@ -307,7 +307,9 @@ export default defineComponent({
             dialogRef.value?.show(() => {})
         }
         const onDeleteItems = () => { }
-        const onUpdateItem = (item: any) => { }
+        const onUpdateItem = (item: any) => {
+            
+        }
         const onDeleteItem = (item: any) => { }
         const onEnableItem = (item: any) => { }
         onMounted(() => {

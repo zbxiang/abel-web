@@ -43,12 +43,12 @@
                     <el-table-column
                         align="center"
                         label="角色编号"
-                        prop="roleCode"
+                        prop="code"
                     />
                     <el-table-column
                         align="center"
                         label="角色描述"
-                        prop="description"
+                        prop="desc"
                     />
                     <el-table-column
                         align="center"
@@ -212,25 +212,26 @@ export default defineComponent({
         }: IDataTable<RoleModelType> = useDataTable()
         const allMenuList = ref<Array<any>>([])
         const doRefresh = () => {
-            // post<Array<RoleModelType>>({
-            //     url: getRoleList,
-            //     data: {},
-            // })
-            //     .then((res) => {
-            //         handleSuccess(res);
-            //     })
-            //     .catch(console.log);
+            $api.getRoleList()
+                .then((res: any) => {
+                    return handleSuccess(res.data.lists)
+                })
+                .catch((error: any) => {
+                    console.log(error)
+                })
         }
         const getAllMenuList = () => {
-            // post<Array<any>>({
-            //     url: getAllMenuByRoleId,
-            // }).then((res) => {
-            //     allMenuList.value = res.data;
-            // });
+            $api.getAllMenuByRoleId()
+                .then((res: any) => {
+                    allMenuList.value = res.data
+                })
+                .catch((error: any) => {
+                    console.log(error)
+                })
         }
         const showMenu = (item: RoleModel) => {
-            // defaultCheckedKeys.value = [];
-            // defaultExpandedKeys.value = [];
+            defaultCheckedKeys.value = []
+            defaultExpandedKeys.value = []
             // post<Array<any>>({
             //     url: getMenuListByRoleId,
             //     data: {
@@ -257,6 +258,9 @@ export default defineComponent({
                 (it: FormItem) => it.reset && it.reset()
             )
             dialogRef.value?.show(() => {
+                if (!baseFormRef.value?.checkParams()) {
+                    return
+                }
                 const formParams = baseFormRef.value?.generatorParams()
                 formParams.code = ROLE_CODE_FLAG + formParams.code
                 $api.roleAdd(formParams)
@@ -274,22 +278,30 @@ export default defineComponent({
             })
         }
         const onUpdateItem = (item: RoleModel) => {
-            // formItems.forEach((it: FormItem) => {
-            //     const typeName = it.name;
-            //     if (typeName) {
-            //         const typeValue = item[typeName];
-            //         if (typeValue) {
-            //             it.value = item[typeName];
-            //         }
-            //     }
-            // });
-            // dialogRef.value?.show(() => {
-            //     ElMessageBox.confirm(
-            //         "角色模拟修改成功，参数为：" +
-            //         JSON.stringify(baseFormRef.value?.generatorParams())
-            //     );
-            //     dialogRef.value?.close();
-            // });
+            formItems.forEach((it: FormItem) => {
+                const typeName = it.name
+                if (typeName) {
+                    const typeValue = item[typeName]
+                    if (typeValue) {
+                        it.value = item[typeName]
+                    }
+                }
+            })
+            dialogRef.value?.show(() => {
+                const params = {...item, ...baseFormRef.value?.generatorParams()}
+                $api.roleUpdate(params)
+                    .then((res: any) => {
+                        ElMessage({
+                            message: res.msg,
+                            type: 'success'
+                        })
+                        dialogRef.value?.close()
+                        doRefresh()
+                    })
+                    .catch((error: any) => {
+                        console.log(error)
+                    })
+            })
         }
         const onDeleteItem = (item: RoleModel) => {
             // ElMessageBox.confirm("是否要删除此信息，删除后不可恢复？", "提示").then(

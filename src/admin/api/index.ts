@@ -3,8 +3,9 @@
  */
 
 import http from '../utils/http'
-import Menu from './menu'
-import Department from './department'
+import menuApi from './menu'
+import departmentApi from './department'
+import roleApi from './role'
 
 export default {
     login(params?: any) {
@@ -46,14 +47,14 @@ export default {
             mock: false
         })
     },
-    getRoleList(params?: any) {
-        return http({
-            url: '/roles/list',
-            method: 'get',
-            data: params,
-            mock: false
-        })
-    },
+    // getRoleList(params?: any) {
+    //     return http({
+    //         url: '/roles/list',
+    //         method: 'get',
+    //         data: params,
+    //         mock: false
+    //     })
+    // },
     getDeptList(params?: any) {
         return http({
             url: '/dept/list',
@@ -62,22 +63,22 @@ export default {
             mock: false
         })
     },
-    roleAdd(params?: any) {
-        return http({
-            url: '/roles/add',
-            method: 'post',
-            data: params,
-            mock: false
-        })
-    },
-    roleUpdate(params?: any) {
-        return http({
-            url: '/roles/update',
-            method: 'post',
-            data: params,
-            mock: false
-        })
-    },
+    // roleAdd(params?: any) {
+    //     return http({
+    //         url: '/roles/add',
+    //         method: 'post',
+    //         data: params,
+    //         mock: false
+    //     })
+    // },
+    // roleUpdate(params?: any) {
+    //     return http({
+    //         url: '/roles/update',
+    //         method: 'post',
+    //         data: params,
+    //         mock: false
+    //     })
+    // },
     roleDelete(params?: any) {
         return http({
             url: '/roles/delete',
@@ -167,7 +168,9 @@ export default {
         })
     },
     // 菜单管理
-    ...Menu,
+    ...menuApi,
     // 部门管理
-    ...Department
+    ...departmentApi,
+    // 角色管理
+    ...roleApi
 }

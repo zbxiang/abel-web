@@ -221,7 +221,7 @@ export default defineComponent({
             parentFormItem.value = [null]
             dialogRef.value?.show(() => {
                 if (!baseForm.value?.checkParams()) {
-                    return;
+                    return
                 }
                 (dialogRef.value as any).loading = true
                 const formParams = getGeneratorParams()
