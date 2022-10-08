@@ -5,15 +5,15 @@ export interface UserModelType {
   id: number;
   avatar?: string;
   mobile: string;
-  email: string;
+  userEmail: string;
   gender: number;
   departmentName?: string;
   departmentId: number | string;
   roleName?: string;
   roleId: number | string;
   status: number;
-  nickName: string;
-  password: string;
+  userName: string;
+  userPwd: string;
 }
 
 /**

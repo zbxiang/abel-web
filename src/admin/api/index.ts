@@ -3,18 +3,12 @@
  */
 
 import http from '../utils/http'
-import menuApi from './menu'
-import departmentApi from './department'
-import roleApi from './role'
+import menuApi from './module/menu'
+import departmentApi from './module/department'
+import roleApi from './module/role'
+import userApi from './module/user'
 
 export default {
-    login(params?: any) {
-        return http({
-            url: '/users/login',
-            method: 'post',
-            data: params
-        })
-    },
     noticeCount() {
         return http({
             url: '/leave/count',
@@ -31,14 +25,14 @@ export default {
             mock: false
         })
     },
-    getMenuListByRoleId(params?: any) {
-        return http({
-            url: '/users/getMenuListByRoleId',
-            method: 'get',
-            data: params,
-            mock: false
-        })
-    },
+    // getMenuListByRoleId(params?: any) {
+    //     return http({
+    //         url: '/users/getMenuListByRoleId',
+    //         method: 'get',
+    //         data: params,
+    //         mock: false
+    //     })
+    // },
     getRoleAllList() {
         return http({
             url: '/roles/allList',
@@ -127,14 +121,6 @@ export default {
             mock: false
         })
     },
-    getUserList(params?: any) {
-        return http({
-            url: '/users/list',
-            method: 'get',
-            data: params,
-            mock: false
-        })
-    },
     addUser(params?: any) {
         return http({
             url: '/users/add',
@@ -172,5 +158,7 @@ export default {
     // 部门管理
     ...departmentApi,
     // 角色管理
-    ...roleApi
+    ...roleApi,
+    // 用户管理
+    ...userApi
 }

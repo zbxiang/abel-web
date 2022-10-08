@@ -163,10 +163,10 @@
                     <el-form-item
                         class="form-item__require"
                         label="用户名称"
-                        prop="nickName"
+                        prop="userName"
                     >
                         <el-input
-                            v-model="userModel.nickName"
+                            v-model="userModel.userName"
                             placeholder="请输入用户名称"
                             clearable
                         />
@@ -181,7 +181,7 @@
                     </el-form-item>
                     <el-form-item class="form-item__require" label="邮箱地址">
                         <el-input
-                            v-model="userModel.email"
+                            v-model="userModel.userEmail"
                             placeholder="请输入邮箱地址"
                             clearable
                         >
@@ -193,7 +193,7 @@
                             <el-radio :label="1">女</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item class="form-item__require" label="所属部门" prop="name">
+                    <el-form-item class="form-item__require" label="所属部门" prop="departmentId">
                         <TreeSelector
                             v-model:value="userModel.departmentId"
                             placeholder="请选择所属部门"
@@ -204,7 +204,7 @@
                             }"
                         />
                     </el-form-item>
-                    <el-form-item class="form-item__require" label="所属角色" prop="path">
+                    <el-form-item class="form-item__require" label="所属角色" prop="roleId">
                         <el-select
                             placeholder="请选择角色"
                             v-model="userModel.roleId"
@@ -219,16 +219,16 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="登录密码" prop="path">
+                    <el-form-item label="登录密码" prop="userPwd">
                         <el-input
-                            v-model="userModel.password"
+                            v-model="userModel.userPwd"
                             type="password"
                             placeholder="请输入登录密码"
                             clearable
                         >
                         </el-input>
                     </el-form-item>
-                    <el-form-item label="用户状态" prop="path">
+                    <el-form-item label="用户状态" prop="status">
                         <el-radio-group v-model="userModel.status">
                             <el-radio :label="1">正常</el-radio>
                             <el-radio :label="0">禁用</el-radio>
@@ -243,7 +243,9 @@
 <script lang="ts">
 import { useDataTable } from '@/admin/hooks'
 import type {
-    UserModelType
+    UserModelType,
+    DepartmentModelType,
+    RoleModelType
 } from '@/admin/entity/system'
 import type {
     DialogType,
@@ -277,18 +279,22 @@ export default defineComponent({
             selectRows,
             useHeight
         } = useDataTable<UserModelType>()
+
+        const departmentList = ref<DepartmentModelType[]>([])
+        const roleList = ref<RoleModelType[]>([])
+
         const srcPath = (path: string) => {
             return new URL(path, import.meta.url).href
         }
         const userModel = reactive<UserModelType>({
             id: 0,
-            nickName: '',
+            userName: '',
             mobile: '',
-            email: '',
+            userEmail: '',
             gender: 1,
             departmentId: '',
             roleId: '',
-            password: '',
+            userPwd: '',
             status: 1
         })
         const doRefresh = () => {
@@ -297,7 +303,13 @@ export default defineComponent({
                     return handleSuccess(res.data.lists)
                 })
                 .then((res: any) => {
-                    tableFooter.value?.setTotalSize(res.totalSize)
+                    // tableFooter.value?.setTotalSize(res.totalSize)
+                    $api.getDepartmentList().then((res: any) => {
+                        departmentList.value = res.data
+                    })
+                    $api.getRoleList().then((res: any) => {
+                       roleList.value = res.data
+                    })
                 })
                 .catch((error: any) => {
                     console.log(error)
@@ -306,10 +318,52 @@ export default defineComponent({
         const onAddItem = () => {
             dialogRef.value?.show(() => {})
         }
-        const onDeleteItems = () => { }
         const onUpdateItem = (item: any) => {
-            
+            userModel.id = item.id
+            userModel.userName = item.userName
+            userModel.mobile = item.mobile
+            userModel.userEmail = item.userEmail
+            userModel.gender = parseInt(item.gender)
+            userModel.departmentId = item.departmentId
+            userModel.roleId = item.roleId
+            userModel.userPwd = ''
+            userModel.status = item.status
+            dialogRef.value?.show(() => {
+                if (!userModel.userName) {
+                    ElMessage.error('请输入用户名')
+                    return
+                }
+                if (!userModel.mobile) {
+                    ElMessage.error('请输入手机号')
+                    return
+                }
+                if (!userModel.userEmail) {
+                    ElMessage.error('请输入邮箱地址')
+                    return
+                }
+                if (userModel.departmentId === '') {
+                    ElMessage.error('请选择所属部门')
+                    return
+                }
+                if (userModel.roleId === '') {
+                    ElMessage.error('请选择所属角色')
+                    return
+                }
+                dialogRef.value?.showLoading()
+                $api.userUpdate(toRaw(userModel)).then((res: any) => {
+                    ElMessage({
+                        message: res.msg,
+                        type: 'success'
+                    })
+                    dialogRef.value?.close()
+                    doRefresh()
+                })
+                .catch((error: any) => {
+                    console.log(error)
+                })
+            })
         }
+        const onDeleteItems = () => { }
         const onDeleteItem = (item: any) => { }
         const onEnableItem = (item: any) => { }
         onMounted(() => {
@@ -330,6 +384,8 @@ export default defineComponent({
             selectRows,
             useHeight,
             srcPath,
+            departmentList,
+            roleList,
             doRefresh,
             onAddItem,
             onDeleteItems,

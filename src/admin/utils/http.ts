@@ -67,7 +67,7 @@ service.interceptors.request.use((req) => {
 
 // 响应拦截
 service.interceptors.response.use((res) => {
-    const { code, msg } = res.data;
+    const { code, msg } = res.data
     if (code === 200) {
         return res.data;
     } else if (code === 500001) {

@@ -60,23 +60,22 @@ export default defineComponent({
             await formEl.validate(async (valid, fields) => {
                 if (valid) {
                     loading.value = true
-                    const res = await $api.login(formData)
-                    if (res.code == 200) {
-                        userStore.saveUser(res.data as UserState).then(() => {
+                    $api.login(formData).then(({ data }: Response) => {
+                        userStore.saveUser(data as UserState).then(() => {
                             router.replace({
                                 path: route.query.redirect
-                                ? (route.query.redirect as string)
-                                : '/',
-                            })
-                            .then(() => {
+                                    ? (route.query.redirect as string)
+                                    : '/',
+                            }).then(() => {
                                 loading.value = false
                             })
                         })
-                    } else {
+                    }).catch((error: any) => {
                         loading.value = false
-                        ElMessage.error(res.msg)
-                    }
+                        // ElMessage.error(error.message)
+                    })
                 } else {
+                    loading.value = false
                     return false
                 }
             })

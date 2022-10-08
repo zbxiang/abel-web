@@ -1,29 +1,29 @@
-import http from '../utils/http'
-const baseurl = '/menu'
+import http from '../../utils/http'
+const baseUrl = '/department'
 
 export default {
-    // 获取菜单列表
-    getMenuList(params?: any) {
+    // 获取部门列表
+    getDepartmentList(params?: any) {
         return http({
-            url: `${baseurl}/list`,
+            url: `${baseUrl}/list`,
             method: 'get',
             data: params,
             mock: false
         })
     },
-    // 新增菜单
-    menuAdd(params?: any) {
+    // 新增部门
+    departmentAdd(params?: any) {
         return http({
-            url: `${baseurl}/add`,
+            url: `${baseUrl}/add`,
             method: 'post',
             data: params,
             mock: false
         })
     },
-    // 编辑菜单
-    menuUpdate(params?: any) {
+    // 更新部门
+    departmentUpdate(params?: any) {
         return http({
-            url: `${baseurl}/update`,
+            url: `${baseUrl}/update`,
             method: 'post',
             data: params,
             mock: false
