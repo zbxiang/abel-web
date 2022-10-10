@@ -261,7 +261,8 @@ import {
     getCurrentInstance,
     ref,
     toRaw,
-    reactive
+    reactive,
+    watch
 } from 'vue'
 
 export default defineComponent({
@@ -293,7 +294,9 @@ export default defineComponent({
             userEmail: '',
             gender: 1,
             departmentId: '',
+            departmentName: '',
             roleId: '',
+            roleName: '',
             userPwd: '',
             status: 1
         })
@@ -370,6 +373,16 @@ export default defineComponent({
             doRefresh()
             useHeight()
         })
+        watch(
+            () => userModel.roleId,
+            (v) => {
+                console.log('dkjgdksjgjsdgj')
+                console.log(v)
+                const result = roleList.value.find(item => { return item.id === v})
+                // userModel.roleName
+                console.log(result)
+            }
+        )
         return {
             PlusIcon,
             DeleteIcon,
